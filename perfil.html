@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Perfil - Loja Fortnite</title>
+  <link rel="stylesheet" href="css/geral.css" />
+  <link rel="stylesheet" href="css/perfil.css" />
+</head>
+<body>
+
+  <!-- Navbar (estilo branco) -->
+  <nav>
+    <div class="qtd-V-bucks">
+      <img src="img/icons/vbuck.png" alt="V-bucks">
+      <h2>0</h2>
+    </div>
+    <ul class="nav-paginas">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="paginas.html">Loja</a></li>
+      <li><a href="perfil.html" class="active">Perfil</a></li>
+    </ul>
+    <button>Entrar</button>
+  </nav>
+
+  <main class="container">
+    <!-- Perfil do Usuário -->
+    <section class="perfil-usuario">
+      <div class="avatar">
+        <div class="placeholder"></div>
+      </div>
+      <div class="info-usuario">
+        <h1>Usuário</h1>
+        <p class="email">name@example.com</p>
+        <p class="vbucks">
+          <img src="img/icons/vbuck.png" alt="V-bucks"> <strong>0</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- Suas Compras -->
+    <section class="compras">
+      <h2>Suas compras</h2>
+      <div class="filtros">
+        <select class="filtro-select">
+          <option>Tipo</option>
+          <option>Outfit</option>
+          <option>Back Bling</option>
+        </select>
+        <select class="filtro-select">
+          <option>Raridade</option>
+          <option>Lendário</option>
+          <option>Épico</option>
+        </select>
+      </div>
+
+      <div class="lista-compras">
+        <!-- Item 1 -->
+        <div class="item-compra">
+          <img src="img/skins/skin1.png" alt="Skin" class="item-img">
+          <div class="item-info">
+            <h3>Nome do Item</h3>
+            <p class="tipo">Tipo</p>
+            <p class="raridade">Lendário</p>
+            <p class="preco">V-bucks: <strong>600</strong></p>
+          </div>
+          <div class="item-data">
+            <p>comprado em:</p>
+            <p class="data">10/10/25</p>
+            <button class="btn-saiba-mais">Saiba mais</button>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="item-compra">
+          <img src="img/skins/skin2.png" alt="Skin" class="item-img">
+          <div class="item-info">
+            <h3>Nome do Item</h3>
+            <p class="tipo">Tipo</p>
+            <p class="raridade">Lendário</p>
+            <p class="preco">V-bucks: <strong>600</strong></p>
+          </div>
+          <div class="item-data">
+            <p>comprado em:</p>
+            <p class="data">10/10/25</p>
+            <button class="btn-saiba-mais">Saiba mais</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

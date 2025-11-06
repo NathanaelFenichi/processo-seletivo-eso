@@ -46,7 +46,6 @@ form label {
   margin: 16px 0 6px 0;
 }
 
-/* ---------- INPUT GROUP COM ÍCONES PNG ---------- */
 .input-group {
   position: relative;
   margin-bottom: 16px;
@@ -57,19 +56,8 @@ form label {
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.input-group .icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: brightness(0) saturate(100%) invert(68%) sepia(12%) saturate(357%) hue-rotate(169deg) brightness(94%) contrast(88%);
-  /* #adb5bd - cinza suave */
-  transition: filter 0.3s ease;
+  font-size: 18px;
+  color: #adb5bd;
 }
 
 .input-group input {
@@ -88,12 +76,6 @@ form label {
   border-color: #1da1f2;
   background: white;
   box-shadow: 0 0 0 4px rgba(29, 161, 242, 0.15);
-}
-
-.input-group input:focus ~ .icon img,
-.input-group:hover .icon img {
-  filter: brightness(0) saturate(100%) invert(27%) sepia(91%) saturate(2800%) hue-rotate(193deg) brightness(97%) contrast(101%);
-  /* #1da1f2 - azul ao focar/hover */
 }
 
 /* ---------- BOTÃO ---------- */

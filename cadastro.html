@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Loja Fortnite</title>
+  <title>Cadastre-se - Loja Fortnite</title>
   <link rel="stylesheet" href="css/geral.css" />
   <link rel="stylesheet" href="css/cadastro-login.css" />
 </head>
@@ -25,10 +25,16 @@
 
   <main class="container">
     <div class="form-card">
-      <h1>FAÇA LOGIN</h1>
-      <p class="subtitle">Entre com suas credenciais para continuar.</p>
+      <h1>CADASTRE-SE</h1>
+      <p class="subtitle">Insira seus dados para acessar nosso sistema.</p>
 
       <form>
+        <label>Digite seu nome</label>
+        <div class="input-group">
+          <span class="icon"><img src="img/icons/user 1.png" alt=""></span>
+          <input type="text" placeholder="Nome completo" required />
+        </div>
+
         <label>Digite seu email</label>
         <div class="input-group">
           <span class="icon"><img src="img/icons/email 1.png" alt=""></span>
@@ -41,9 +47,15 @@
           <input type="password" placeholder="Digite sua senha..." required />
         </div>
 
-        <button type="submit" class="btn-submit">Entrar</button>
+        <label>Confirmar senha</label>
+        <div class="input-group">
+          <span class="icon"><img src="img/icons/padlock 5.png" alt=""></span>
+          <input type="password" placeholder="Confirme sua senha..." required />
+        </div>
 
-        <p class="switch-link">Não tem conta? <a href="cadastro.html">Cadastre-se!</a></p>
+        <button type="submit" class="btn-submit">Cadastrar</button>
+
+        <p class="switch-link">Já tem conta? <a href="login.html">Faça login!</a></p>
       </form>
     </div>
   </main>

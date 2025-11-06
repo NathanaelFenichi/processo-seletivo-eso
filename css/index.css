@@ -1,0 +1,209 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+/* Banner */
+.banner {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.banner h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #212529;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 3px solid #1da1f2;
+  display: inline-block;
+}
+
+.banner img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Novos Produtos */
+.novos-produtos h2 {
+  font-size: 24px;
+  color: #212529;
+  margin: 0 0 20px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #1da1f2;
+  display: inline-block;
+}
+
+.grid-produtos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+
+.card {
+    width: 280px;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.card-body {
+    width: 90%;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.tipo {
+    font-size: 12px;
+    color: #777;
+    margin: 0;
+}
+
+.card-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
+    margin: 0;
+    border-bottom: 2px solid #1da1f2;
+    display: inline-block;
+    padding-bottom: 2px;
+}
+
+.card-icon {
+    width: 90px;
+    height: auto;
+    object-fit: contain;
+}
+
+hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 10px 0;
+}
+
+.valor, .raridade {
+    font-size: 14px;
+    color: #555;
+    font-weight: 600;
+    margin: 0;
+}
+
+.valor span {
+    font-weight: 700;
+    color: #111;
+}
+
+.raridade {
+    color: #9c27b0;
+}
+
+/* Botão Comprar*/
+#btn-comprar {
+    width: 100%;
+    background: #1da1f2;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 12px;
+}
+
+#btn-comprar:hover {
+    background: #0a5788;
+}
+
+.info {
+  padding: 14px;
+  position: relative;
+}
+
+.info .tipo {
+  font-size: 13px;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info h3 {
+  font-size: 17px;
+  color: #212529;
+  margin: 4px 0;
+  font-weight: 600;
+}
+
+.preco-raridade {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #495057;
+  margin: 6px 0;
+}
+
+.preco-raridade strong {
+  color: #00bcd4;
+  font-weight: 700;
+}
+
+.badge-novo {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  background: #ffc107;
+  color: #212529;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 20px;
+}
+
+.btn-comprar {
+  width: 100%;
+  background: #1da1f2;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.btn-comprar:hover {
+  background: #0d8bd9;
+}
