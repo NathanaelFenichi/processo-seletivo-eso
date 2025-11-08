@@ -28,29 +28,29 @@
       <h1>CADASTRE-SE</h1>
       <p class="subtitle">Insira seus dados para acessar nosso sistema.</p>
 
-      <form>
+      <form method="post" action="cadastro.php">
         <label>Digite seu nome</label>
         <div class="input-group">
           <span class="icon"><img src="img/icons/user 1.png" alt=""></span>
-          <input type="text" placeholder="Nome completo" required />
+          <input name="nome" type="text" placeholder="Nome completo" required />
         </div>
 
         <label>Digite seu email</label>
         <div class="input-group">
           <span class="icon"><img src="img/icons/email 1.png" alt=""></span>
-          <input type="email" placeholder="email@example.com" required />
+          <input name="email" type="email" placeholder="email@example.com" required />
         </div>
 
         <label>Senha</label>
         <div class="input-group">
           <span class="icon"><img src="img/icons/padlock 5.png" alt=""></span>
-          <input type="password" placeholder="Digite sua senha..." required />
+          <input name="senha" type="password" placeholder="Digite sua senha..." required />
         </div>
 
         <label>Confirmar senha</label>
         <div class="input-group">
           <span class="icon"><img src="img/icons/padlock 5.png" alt=""></span>
-          <input type="password" placeholder="Confirme sua senha..." required />
+          <input name="confirmaSenha" type="password" placeholder="Confirme sua senha..." required />
         </div>
 
         <button type="submit" class="btn-submit">Cadastrar</button>
