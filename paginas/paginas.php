@@ -146,6 +146,11 @@
       <!-- Adicione mais cards aqui -->
 
     </section>
-  </main>
+      </main>
+
+      <!-- Scripts: jQuery + catalogo e filtros (local backend/js) -->
+      <script src="../backend/js/jquery-3.7.1.min.js"></script>
+      <script src="../backend/js/catalogo.js"></script>
+      <script src="../backend/js/filtros.js"></script>
 </body>
 </html>

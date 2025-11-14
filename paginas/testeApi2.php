@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../css/shop.css" /> 
   <script src="../backend/js/jquery-3.7.1.min.js" ></script>
   <script src="../backend/js/apiteste.js" ></script>
+  <script src="../backend/js/fetch_api.js"></script>
  
 </head>
 <body>
@@ -29,26 +30,30 @@
         </label>
         <input type="search" id="pesquisa" placeholder="Pesquise por skins, armas, emotes..." />
 
+        <!-- DROPDOWN TIPO -->
         <div class="dropdown">
           <button class="dropdown-btn">Tipo</button>
           <div class="dropdown-menu">
-            <a href="#">Outfits</a>
-            <a href="#">Back Blings</a>
-            <a href="#">Pickaxes</a>
-            <a href="#">Gliders</a>
-            <a href="#">Emotes</a>
-            <a href="#">Wraps</a>
+            <a href="#" data-value="">Todos</a>
+            <a href="#" data-value="outfit">Outfits</a>
+            <a href="#" data-value="backpack">backpack</a>
+            <a href="#" data-value="pickaxe">Pickaxes</a>
+            <a href="#" data-value="glider">Gliders</a>
+            <a href="#" data-value="emote">Emotes</a>
+            <a href="#" data-value="wrap">Wraps</a>
           </div>
         </div>
 
+        <!-- DROPDOWN RARIDADE -->
         <div class="dropdown">
           <button class="dropdown-btn">Raridade</button>
           <div class="dropdown-menu">
-            <a href="#">Comum</a>
-            <a href="#">Incomum</a>
-            <a href="#">Raro</a>
-            <a href="#">Épico</a>
-            <a href="#">Lendário</a>
+            <a href="#" data-value="">Todas</a>
+            <a href="#" data-value="common">Comum</a>
+            <a href="#" data-value="uncommon">Incomum</a>
+            <a href="#" data-value="rare">Raro</a>
+            <a href="#" data-value="epic">Épico</a>
+            <a href="#" data-value="legendary">Lendário</a>
           </div>
         </div>
       </div>

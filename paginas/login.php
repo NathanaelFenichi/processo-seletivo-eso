@@ -27,6 +27,15 @@
   <main class="container">
     <div class="form-card">
       <h1>FAÇA LOGIN</h1>
+
+      <?php 
+      session_start();
+      if (isset($_SESSION['login_erro'])) {
+          echo "<p style='color: #ff4444; font-weight: bold; margin: 10px 0;'>{$_SESSION['login_erro']}</p>";
+          unset($_SESSION['login_erro']);
+      }
+      ?>
+
       <p class="subtitle">Entre com suas credenciais para continuar.</p>
 
       <form method="post" action="../backend/validaLogin.php">

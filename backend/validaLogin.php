@@ -1,36 +1,24 @@
 <?php
-require 'conecta.php';
 session_start();
+include 'conecta.php';
 
-$erro = '';
+if ($_POST) {
+  $email = $conn->real_escape_string($_POST['email']);
+  $senha = $_POST['senha'];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $senha = $_POST['senha'];
+  $sql = "SELECT * FROM usuarios WHERE email = '$email'";
+  $result = $conn->query($sql);
 
-    // Verifica se o email existe
-    $stmt = $conn->prepare("SELECT id, nome, senha FROM usuarios WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+  if ($result->num_rows > 0) {
     $user = $result->fetch_assoc();
-
-    // Verifica login sem revelar qual dado está errado
-    if (!$user || !password_verify($senha, $user['senha'])) {
-        $erro = 'Usuário ou senha inválidos!';
+    if (password_verify($senha, $user['senha'])) {
+      $_SESSION['id_sistema'] = 'sislogin2024*';
+      $_SESSION['user_id'] = $user['ID'];
+      $_SESSION['vbucks'] = $user['vbucks'];
+      header("Location: ../catalogo.php");
+      exit;
     }
-
-    // Se não houver erro, cria a sessão
-    if ($erro == '') {
-        $_SESSION['usuario_id'] = $user['id'];
-        $_SESSION['usuario_nome'] = $user['nome'];
-        echo "<script>alert(;</script>";
-        header("Location: ../index.php");
-         
-    
-    } else {
-        echo "<script>alert('$erro');history.back();</script>";
-        exit;
-    }
+  }
+  header("Location: ../login.php?erro=1"); // Volta com erro
 }
 ?>
