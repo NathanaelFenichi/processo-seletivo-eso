@@ -101,20 +101,4 @@ form label {
   box-shadow: 0 6px 18px rgba(29, 161, 242, 0.3);
 }
 
-/* ---------- LINK DE TROCA ---------- */
-.switch-link {
-  font-size: 14px;
-  color: #555;
-  margin-top: 16px;
-}
-
-.switch-link a {
-  color: #1da1f2;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.switch-link a:hover {
-  text-decoration: underline;
-}
 

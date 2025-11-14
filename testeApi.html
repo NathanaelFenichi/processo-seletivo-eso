@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Loja Fortnite com Paginação</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+  <h1>Loja Fortnite</h1>
+  <div id="lista"></div>
+  <button id="prev">⬅️ Anterior</button>
+  <button id="next">Próximo ➡️</button>
+
+  <script>
+  $(document).ready(function() {
+    const url = "https://fortnite-api.com/v2/cosmetics/br";
+    let itens = [];
+    let pagina = 0;
+    const porPagina = 10;
+
+    function mostrarPagina() {
+      const inicio = pagina * porPagina;
+      const fim = inicio + porPagina;
+      const parte = itens.slice(inicio, fim);
+      let html = "";
+
+      parte.forEach(item => {
+        
+        html += `
+          <div>
+            <img src="${item.images.icon}" width="80">
+            <p>${item.name}</p>
+            <small>${item.rarity.value}</small>
+          </div>
+        `;
+      });
+
+      $("#lista").html(html);
+    }
+
+    $.getJSON(url, function(resposta) {
+      itens = resposta.data;
+      mostrarPagina();
+    });
+
+    $("#next").click(function() {
+      if ((pagina + 1) * porPagina < itens.length) {
+        pagina++;
+        mostrarPagina();
+      }
+    });
+
+    $("#prev").click(function() {
+      if (pagina > 0) {
+        pagina--;
+        mostrarPagina();
+      }
+    });
+  });
+  </script>
+
+</body>
+</html>

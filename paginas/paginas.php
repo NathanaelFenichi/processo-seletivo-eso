@@ -10,19 +10,11 @@
 <body>
 
   <!-- Navbar -->
-  <nav>
-    <div class="qtd-V-bucks">
-      <img src="../img/icons/vbuck.png" alt="V-bucks">
-      <h2 id="valor-Vbucks"></h2>
-    </div>
-    <ul class="nav-paginas">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="paginas.html" class="active">Loja</a></li>
-      <li><a href="perfil.html">Perfil</a></li>
-    </ul>
-    <button><a href="login.html">Entrar</a></button>
-  </nav>
 
+  <?php
+ include 'nav.php';
+  ?>
+  
   <main class="container">
 
 

@@ -9,20 +9,11 @@
 </head>
 <body>
 
-  <!-- Navbar (estilo branco) -->
-  <nav>
-    <div class="qtd-V-bucks">
-      <img src="../img/icons/vbuck.png" alt="V-bucks">
-      <h2>0</h2>
-    </div>
-    <ul class="nav-paginas">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="paginas.html">Loja</a></li>
-      <li><a href="perfil.html" class="active">Perfil</a></li>
-    </ul>
-    <button><a href="login.html">Entrar</a></button>
-  </nav>
-
+  <!-- Navbar -->
+  <?php
+ include 'nav.php';
+  ?>
+  
   <main class="container">
     <!-- Perfil do Usuário -->
     <section class="perfil-usuario">

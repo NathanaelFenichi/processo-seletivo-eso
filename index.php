@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -10,18 +13,7 @@
 <body>
 
   <!-- Navbar -->
-  <nav>
-    <div class="qtd-V-bucks">
-      <img src="img/icons/vbuck.png" alt="V-bucks">
-      <h2>0</h2>
-    </div>
-    <ul class="nav-paginas">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="paginas/paginas.html">Loja</a></li>
-      <li><a href="paginas/perfil.html">Perfil</a></li>
-    </ul>
-    <button class="btn"><a href="cadastro.html">Entrar</a></button>
-  </nav>
+<?php include 'paginas/nav.php'; ?>
 
   <main class="container">
     <!-- Banner -->
@@ -140,4 +132,4 @@
     </section>
   </main>
 </body>
-</html>
+</html> -->
