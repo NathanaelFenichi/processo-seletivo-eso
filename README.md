@@ -14,7 +14,9 @@ Projeto enviado para o processo seletivo da vaga de estágio. Sem rodeio: entreg
 
 ## O que não foi feito
 
-* Partes que não consegui finalizar dentro do prazo. (Salvar compras do usuario, login funcional com sessão ativa, filtro de tipo, salvar no docker (aparentemente meu dispositivo não é compativel) )
+* Partes que não consegui finalizar dentro do prazo. (Salvar compras do usuario, login funcional com sessão ativa, filtro de tipo, salvar no docker (aparentemente meu dispositivo não é compativel), pagina com produto especifico e sua descricao)
+* somente o catalogo login e cadastro tem funcionalidades interativas.
+
 
 ## Como acessar
 
@@ -31,8 +33,11 @@ cd processo-seletivo-eso
 ```
 
 3. Execute em ambiente local (XAMPP/WAMP/PHP) conforme seu setup.
-
-Se o projeto exigir passos extras, coloque aqui depois. Quanto mais direto, melhor.
+  importe o mydb (1).sql como banco de dados
+  ja vai estar como localhost a configuração então é so entrar por
+  [phpmyA](http://localhost/processo-seletivo-eso/index.php)]
+  e ja estará rodando na sua maquina,
+  lembre se de adicionar o arquivo dentro de C:\xampp\htdocs para funcionar
 
 ## Estrutura do Projeto
 
