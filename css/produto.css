@@ -1,43 +1,223 @@
-.produto-wrapper {
-  display: flex;
-  gap: 30px;
-  align-items: center;
+/* --- FUNDO GERAL --- */
+.fundo-moderno {
+    background-color: #f0f2f5; /* Cinza bem claro e limpo */
+    min-height: calc(100vh - 60px);
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centraliza o card verticalmente */
+    padding: 40px 20px;
 }
 
-.skin-imagem {
-  position: relative;
+/* --- O CARD PRINCIPAL --- */
+.card-produto-especial {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 24px; /* Borda bem arredondada */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05); /* Sombra moderna e difusa */
+    display: flex;
+    overflow: hidden; /* Garante que nada saia das bordas arredondadas */
 }
 
-.skin-imagem img {
-  width: 400px;
-  height: auto;
-  border-radius: 10px;
+/* --- LADO ESQUERDO (IMAGEM) --- */
+.box-imagem {
+    flex: 1;
+    background-color: #fdfdfd;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #f0f0f0; /* Divisória sutil */
 }
 
-.logo-fortnite {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  color: white;
-  background: rgba(0,0,0,0.5);
-  padding: 5px;
+.fundo-img-suave {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
-.skin-info {
-  flex: 1;
+.box-imagem img {
+    max-width: 100%;
+    max-height: 500px; /* Limita altura para não esticar demais */
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+    transition: transform 0.3s ease;
 }
 
-.botoes {
-  display: flex;
-  gap: 15px;
-  margin-top: 20px;
+.box-imagem img:hover {
+    transform: scale(1.05) rotate(2deg);
 }
 
-.btn-voltar {
-  background: #777;
-  color: white;
+/* --- LADO DIREITO (INFO) --- */
+.box-info {
+    flex: 1.1; /* Um pouco mais largo que a imagem */
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza o conteúdo verticalmente */
 }
 
-.descricao {
-  margin-top: 40px;
+/* Cabeçalho */
+.box-info h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+    line-height: 1.1;
+}
+
+.meta-dados {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.badge-tipo, .badge-raridade {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background-color: #f0f4f8;
+    color: #555;
+    letter-spacing: 0.5px;
+}
+
+/* --- CAIXA CINZA DA DESCRIÇÃO (O que você gostou na ref) --- */
+.descricao-container-cinza {
+    background-color: #f8f9fa; /* Cinza muito suave */
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 40px;
+    border: 1px solid #edf2f7;
+}
+
+.desc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.desc-header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+    text-transform: uppercase;
+}
+
+.icone-info {
+    font-size: 0.8rem;
+    background: #e2e8f0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #777;
+    font-weight: bold;
+    font-family: serif;
+}
+
+#descricao {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #666;
+}
+
+/* --- PREÇO E BOTÕES --- */
+.rodape-acao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 30px;
+}
+
+.preco-box .label {
+    display: block;
+    font-size: 0.8rem;
+    color: #999;
+    margin-bottom: 2px;
+}
+
+.valor-final {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #1da1f2; /* SEU AZUL DE DESTAQUE */
+}
+
+.botoes-wrapper {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.btn-azul-full {
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(29, 161, 242, 0.3);
+}
+
+.btn-azul-full:hover {
+    background-color: #0c8bd9;
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #777;
+    border: 2px solid #e2e8f0;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-outline:hover {
+    border-color: #cbd5e0;
+    color: #333;
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 900px) {
+    .card-produto-especial {
+        flex-direction: column;
+    }
+    
+    .box-imagem {
+        border-right: none;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 30px;
+    }
+
+    .box-info {
+        padding: 30px;
+    }
+
+    .rodape-acao {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    
+    .botoes-wrapper {
+        width: 100%;
+    }
+
+    .btn-azul-full, .btn-outline {
+        flex: 1;
+        text-align: center;
+    }
 }

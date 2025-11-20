@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="../css/geral.css" />
   <link rel="stylesheet" href="../css/shop.css" /> 
   <script src="../backend/js/jquery-3.7.1.min.js" ></script>
-  <script src="../backend/js/apiteste.js" ></script>
-  <script src="../backend/js/fetch_api.js"></script>
+  <script src="../backend/js/catalogo.js" ></script>
+
  
 </head>
 <body>
