@@ -46,164 +46,223 @@
 }
 
 
-.card {
-    width: 280px;
-    border-radius: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    overflow: hidden;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: 'Poppins', sans-serif;
-    transition: transform 0.2s ease;
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+.card {
+    background: rgb(255, 255, 255);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 460px;
+    border: 1px solid #f0f0f0;
+}
+
+.card-link:hover .card {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(51, 204, 153, 0.15);
+    border-color: #33CC99;
+}
+
+.card-header {
+    position: relative;
+    height: 260px;
+    background: #fafafa;
+    border-bottom: 1px solid rgb(219, 219, 219);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .card-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: 0.3s;
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.1));
+}
+
+.card-link:hover .card-img {
+    transform: scale(1.08);
+}
+
+.badges-container {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.badge {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 12px;
+    color: white;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.badge-novo {
+    background: #ffc107;
+    color: #333;
+}
+
+.badge-venda {
+    background: #33CC99;
 }
 
 .card-body {
-    width: 90%;
-    padding: 12px 0;
+    padding: 16px;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
 }
 
-.card-div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+.card-info-top h5 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #222;
+    margin: 4px 0 0 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 38px;
 }
 
 .tipo {
     font-size: 12px;
-    color: #777;
-    margin: 0;
-}
-
-.card-name {
-    font-size: 18px;
+    color: #888;
+    text-transform: uppercase;
     font-weight: 700;
-    color: #222;
-    margin: 0;
-    border-bottom: 2px solid #1da1f2;
-    display: inline-block;
-    padding-bottom: 2px;
+    letter-spacing: 0.5px;
 }
 
-.card-icon {
-    width: 90px;
-    height: auto;
-    object-fit: contain;
+.card-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    margin-top: 12px;
+    border-top: 1px solid #eee;
+    padding-top: 12px;
 }
 
-hr {
-    width: 100%;
-    border: none;
-    border-top: 1px solid #ddd;
-    margin: 10px 0;
-}
-
-.valor, .raridade {
-    font-size: 14px;
-    color: #555;
-    font-weight: 600;
-    margin: 0;
+.valor {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+    color: #444;
 }
 
 .valor span {
-    font-weight: 700;
-    color: #111;
+    color: #00bcd4;
+    font-weight: 800;
+}
+
+.vbuck-icon {
+    width: 18px;
+    height: 18px;
 }
 
 .raridade {
-    color: #9c27b0;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #f0f0f0;
+    color: #666;
+    text-transform: uppercase;
 }
 
-/* Botão Comprar*/
-#btn-comprar {
+.raridade-legendary { color: #d37841; background: #fff0e6; }
+
+.raridade-epic      { color: #b15be2; background: #f6e6ff; }
+
+.raridade-rare      { color: #49acf2; background: #eaf6ff; }
+
+.raridade-uncommon  { color: #60aa3a; background: #eefbe6; }
+
+.raridade-icon      { color: #2ecc71; background: #e8f8f5; }
+
+.raridade-marvel    { color: #e74c3c; background: #fadbd8; }
+
+.btn {
     width: 100%;
-    background: #1da1f2;
-    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
     border: none;
-    padding: 10px;
-    border-radius: 8px;
-    font-weight: 600;
-    margin-top: 12px;
-}
-
-#btn-comprar:hover {
-    background: #0a5788;
-}
-
-.info {
-  padding: 14px;
-  position: relative;
-}
-
-.info .tipo {
-  font-size: 13px;
-  color: #6c757d;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.info h3 {
-  font-size: 17px;
-  color: #212529;
-  margin: 4px 0;
-  font-weight: 600;
-}
-
-.preco-raridade {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  color: #495057;
-  margin: 6px 0;
-}
-
-.preco-raridade strong {
-  color: #00bcd4;
-  font-weight: 700;
-}
-
-.badge-novo {
-  position: absolute;
-  top: -8px;
-  right: 12px;
-  background: #ffc107;
-  color: #212529;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 20px;
+    transition: 0.2s;
+    text-align: center;
 }
 
 .btn-comprar {
-  width: 100%;
-  background: #1da1f2;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 15px;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background 0.3s;
+    background: #1da1f2;
+    color: white;
+    box-shadow: 0 4px 0 #168acb;
 }
 
-.btn-comprar:hover {
-  background: #0d8bd9;
+.card-link:hover .btn-comprar {
+    background: #1899e6;
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #168acb;
+}
+
+.btn-indisponivel {
+    background: transparent;
+    color: #aaa;
+    border: 1px solid #ddd;
+}
+
+.paginação {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 40px 0;
+}
+
+.btn-pag {
+    background: #33CC99;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-pag:hover {
+    background: #28a085;
+}
+
+.num-pag {
+    background: #26a87b;
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.loading-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #888;
 }

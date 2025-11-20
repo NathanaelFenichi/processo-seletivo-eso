@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortnite: Catálogo Unificado</title>
+    <style>
+        /* --- TEMA CLARO --- */
+        :root {
+            --bg-body: #f4f6f8;
+            --bg-card: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --border-color: #e1e4e8;
+            --accent-color: #2980b9; /* Azul */
+            --price-color: #f1c40f;  /* Amarelo V-Bucks */
+            --new-color: #e74c3c;    /* Vermelho Novo */
+            --shop-color: #27ae60;   /* Verde Loja */
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- CABEÇALHO E CONTROLES --- */
+        header {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            color: var(--text-primary);
+            outline: none;
+            transition: 0.3s;
+        }
+        .search-bar:focus { border-color: var(--accent-color); }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        input[type="checkbox"] {
+            accent-color: var(--accent-color);
+            width: 18px;
+            height: 18px;
+        }
+
+        /* --- GRID E CARDS --- */
+        #catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1300px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: var(--accent-color);
+        }
+
+        /* Container da Imagem */
+        .img-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #ecf0f1; /* Fundo cinza claro p/ imagens */
+            overflow: hidden;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        /* Badges (Etiquetas) */
+        .badge-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 10;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .badge-new { background-color: var(--new-color); }
+        .badge-shop { background-color: var(--shop-color); }
+
+        /* Preço */
+        .price-tag {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--price-color);
+            color: #000;
+            font-weight: 900;
+            padding: 6px 12px;
+            border-top-left-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            z-index: 10;
+        }
+        
+        .price-unavailable {
+            background: #bdc3c7; /* Cinza */
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .vbuck-icon { width: 16px; height: 16px; }
+
+        /* Info do Card */
+        .card-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--text-primary);
+        }
+
+        .card-type {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .card-id {
+            font-size: 10px;
+            color: #ccc;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+
+        /* Botão Carregar Mais */
+        #load-more-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            display: none; /* Escondido até carregar */
+        }
+        #load-more-btn:hover { background: #1f618d; }
+
+        /* Mensagem de Status */
+        #status-msg {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Catálogo Master Fortnite</h1>
+        <img src="img/icons/loading-text.gif" alt="">
+        
+        <div class="controls">
+            <input type="text" id="search" class="search-bar" placeholder="🔍 Pesquisar item (Nome, Tipo)..." onkeyup="aplicarFiltros()">
+            
+            <div class="filters">
+                <span>Filtrar por:</span>
+                
+                <label class="filter-group">
+                    <input type="checkbox" id="check-new" onchange="aplicarFiltros()">
+                    <span style="color: var(--new-color)"> Novos</span>
+                </label>
+
+                <label class="filter-group">
+                    <input type="checkbox" id="check-shop" onchange="aplicarFiltros()">
+                    <span style="color: var(--shop-color)"></span> À Venda </span>
+                </label>
+            </div>
+            <div style="font-size: 12px; color: #999; text-align: center; margin-top: 5px;">
+                Total no Catálogo: <span id="total-db">0</span> | 
+                Na Loja: <span id="total-shop">0</span> | 
+                Novos: <span id="total-new">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div id="status-msg">Inicializando sistema e unificando APIs...</div>
+    <div id="catalog-grid"></div>
+    <button id="load-more-btn" onclick="renderizarLote()">Carregar Mais Itens</button>
+
+    <script>
+        // --- VARIÁVEIS GLOBAIS ---
+        // 'masterMap' é um objeto gigante onde a CHAVE é o ID do item.
+        // Isso permite cruzar dados das 3 APIs instantaneamente.
+        let masterMap = new Map(); 
+        
+        let listaFiltrada = []; // Lista atual sendo exibida (após filtros)
+        let indiceRenderizacao = 0;
+        const ITENS_POR_PAGINA = 50; // Evita travar o navegador
+
+        // --- FUNÇÕES DE INICIALIZAÇÃO ---
+        async function iniciarSistema() {
+            const status = document.getElementById('status-msg');
+            
+            try {
+                // 1. Baixar TODOS os cosméticos (Base)
+                status.innerText = "Baixando Banco de Dados (1/3)...";
+                const resAll = await fetch('https://fortnite-api.com/v2/cosmetics/br?language=pt-BR');
+                const jsonAll = await resAll.json();
+                
+                if(!jsonAll.data) throw new Error("Falha ao baixar cosméticos.");
+
+                // Preenche o Mapa Mestre
+                jsonAll.data.forEach(item => {
+                    masterMap.set(item.id.toLowerCase(), {
+                        ...item,
+                        isNew: false,
+                        inShop: false,
+                        price: null,
+                        shopImage: null
+                    });
+                });
+
+                document.getElementById('total-db').innerText = masterMap.size;
+
+                // 2. Baixar NOVIDADES e marcar no Mapa
+                status.innerText = "Identificando Novidades (2/3)...";
+                const resNew = await fetch('https://fortnite-api.com/v2/cosmetics/new?language=pt-BR');
+                const jsonNew = await resNew.json();
+                const newItems = jsonNew.data?.items?.br || jsonNew.data?.items || [];
+
+                let countNew = 0;
+                newItems.forEach(newItem => {
+                    const id = newItem.id.toLowerCase();
+                    // Se o item já existe no mapa, atualiza. Se não, cria (raro).
+                    if (masterMap.has(id)) {
+                        const item = masterMap.get(id);
+                        item.isNew = true;
+                        countNew++;
+                    }
+                });
+                document.getElementById('total-new').innerText = countNew;
+
+                // 3. Baixar LOJA e marcar no Mapa (com preço)
+                status.innerText = "Processando Loja e Preços (3/3)...";
+                const resShop = await fetch('https://fortnite-api.com/v2/shop?language=pt-BR');
+                const jsonShop = await resShop.json();
+                const entries = jsonShop.data?.entries || [];
+
+                let countShop = 0;
+                entries.forEach(entry => {
+                    if (!entry.items) return;
+                    
+                    entry.items.forEach(subItem => {
+                        const id = subItem.id.toLowerCase();
+                        
+                        // Se acharmos o item no banco de dados mestre
+                        if (masterMap.has(id)) {
+                            const item = masterMap.get(id);
+                            item.inShop = true;
+                            item.price = entry.finalPrice;
+                            
+                            // Se a loja tiver uma imagem especial (ex: bundle), salvamos para usar ela
+                            if (entry.newDisplayAsset?.materialInstances?.[0]?.images?.Background) {
+                                item.shopImage = entry.newDisplayAsset.materialInstances[0].images.Background;
+                            }
+                            countShop++;
+                        }
+                    });
+                });
+                document.getElementById('total-shop').innerText = countShop;
+
+                // Finalização
+                status.style.display = 'none';
+                document.getElementById('load-more-btn').style.display = 'block';
+                
+                // Aplica filtros pela primeira vez (mostra tudo)
+                aplicarFiltros();
+
+            } catch (erro) {
+                console.error(erro);
+                status.innerText = "Erro fatal ao carregar dados: " + erro.message;
+                status.style.color = "red";
+            }
+        }
+
+        // --- LÓGICA DE FILTROS ---
+        function aplicarFiltros() {
+            const termo = document.getElementById('search').value.toLowerCase();
+            const soNovos = document.getElementById('check-new').checked;
+            const soLoja = document.getElementById('check-shop').checked;
+
+            // Converte o Mapa em Array para filtrar
+            const todosItens = Array.from(masterMap.values());
+
+            listaFiltrada = todosItens.filter(item => {
+                // 1. Filtro de Texto
+                const nomeMatch = item.name && item.name.toLowerCase().includes(termo);
+                if (!nomeMatch && termo.length > 0) return false;
+
+                // 2. Filtro de Checkbox
+                if (soNovos && !item.isNew) return false;
+                if (soLoja && !item.inShop) return false;
+
+                return true;
+            });
+            
+            // Se não houver filtros e o termo for vazio, prioriza mostrar Loja e Novos primeiro
+            if (!soNovos && !soLoja && termo === "") {
+                listaFiltrada.sort((a, b) => {
+                    // Lógica de ordenação: Loja > Novo > Resto
+                    if (a.inShop && !b.inShop) return -1;
+                    if (!a.inShop && b.inShop) return 1;
+                    if (a.isNew && !b.isNew) return -1;
+                    if (!a.isNew && b.isNew) return 1;
+                    return 0;
+                });
+            }
+
+            // Reseta a renderização
+            const grid = document.getElementById('catalog-grid');
+            grid.innerHTML = '';
+            indiceRenderizacao = 0;
+            
+            if (listaFiltrada.length === 0) {
+                document.getElementById('status-msg').style.display = 'block';
+                document.getElementById('status-msg').innerText = "Nenhum item encontrado com esses filtros.";
+                document.getElementById('load-more-btn').style.display = 'none';
+            } else {
+                document.getElementById('status-msg').style.display = 'none';
+                document.getElementById('load-more-btn').style.display = 'block';
+                renderizarLote(); // Começa a desenhar
+            }
+        }
+
+        // --- RENDERIZAÇÃO OTIMIZADA (Lotes) ---
+        function renderizarLote() {
+            const grid = document.getElementById('catalog-grid');
+            const max = Math.min(indiceRenderizacao + ITENS_POR_PAGINA, listaFiltrada.length);
+
+            for (let i = indiceRenderizacao; i < max; i++) {
+                const item = listaFiltrada[i];
+                const card = criarHTMLCard(item);
+                grid.appendChild(card);
+            }
+
+            indiceRenderizacao = max;
+
+            // Esconde botão se acabou
+            if (indiceRenderizacao >= listaFiltrada.length) {
+                document.getElementById('load-more-btn').style.display = 'none';
+            }
+        }
+
+        function criarHTMLCard(item) {
+            const div = document.createElement('div');
+            div.className = 'card';
+
+            // Define Imagem (Prioriza imagem da loja se existir, senão ícone padrão)
+            let imgUrl = item.shopImage || item.images?.icon || item.images?.smallIcon || 'https://via.placeholder.com/200';
+            
+            // HTML das Badges
+            let badgesHtml = '<div class="badge-container">';
+            if (item.isNew) badgesHtml += `<span class="badge badge-new">NOVO</span>`;
+            if (item.inShop) badgesHtml += `<span class="badge badge-shop">LOJA</span>`;
+            badgesHtml += '</div>';
+
+            // HTML do Preço
+            let priceHtml = '';
+            if (item.inShop && item.price) {
+                priceHtml = `
+                    <div class="price-tag">
+                        <img src="https://fortnite-api.com/images/vbuck.png" class="vbuck-icon">
+                        ${item.price}
+                    </div>`;
+            } else {
+                priceHtml = `
+                    <div class="price-tag price-unavailable">
+                        Indisponível
+                    </div>`;
+            }
+
+            div.innerHTML = `
+                <div class="img-container">
+                    <img src="${imgUrl}" class="card-img" loading="lazy">
+                    ${badgesHtml}
+                    ${priceHtml}
+                </div>
+                <div class="card-info">
+                    <div>
+                        <div class="card-name" title="${item.name}">${item.name || 'Sem Nome'}</div>
+                        <div class="card-type">${item.type?.displayValue || 'Item'}</div>
+                    </div>
+                    <!-- <div class="card-id">${item.id}</div> -->
+                </div>
+            `;
+            return div;
+        }
+
+        // Inicia tudo ao carregar
+        iniciarSistema();
+
+    </script>
+</body>
+</html>

@@ -1,235 +1,275 @@
 $(document).ready(function () {
-
-    // =========================
-    // CONFIGURAÇÕES E VARIÁVEIS GLOBAIS
-    // =========================
-    // 1. Links Corrigidos (Battle Royale + Inglês)
-    const urlShop = 'https://fortnite-api.com/v2/shop?language=en';
-    const urlCosmeticos = 'https://fortnite-api.com/v2/cosmetics/br?language=en';
-    const urlNew = 'https://fortnite-api.com/v2/cosmetics/br/new?language=en';
-
-    let venda = [];       // IDs dos itens na loja hoje
-    let todos = [];       // Lista completa de cosméticos (milhares)
-    let novos = [];       // IDs dos itens novos
-    let precos = {};      // Mapa de Preços: ID -> Preço
-
-    let listaFiltrada = []; // Lista temporária usada na busca/filtros
-
-    let carregado = 0;    // Contador de requisições
-
-    // Paginação
+    
+    // --- VARIÁVEIS E CONFIGURAÇÕES ---
+    let catalogoMap = new Map(); 
+    let listaVisivel = [];       
     let paginaAtual = 1;
-    const itensPorPagina = 24; // Quantos cards aparecem por vez
-
-    // Filtros Atuais
+    const itensPorPagina = 25;
     let filtroTexto = "";
     let filtroTipo = "";
     let filtroRaridade = "";
 
-    // =========================
-    // REQUISIÇÕES AJAX
-    // =========================
+    const $container = $("#catalogo");
+    const $statusPagina = $("#numero-pagina");
 
-    // 1) SHOP
-    $.getJSON(urlShop, function (shop) {
-        if (shop.data && shop.data.entries) {
-            shop.data.entries.forEach(entry => {
-                // Alguns entries têm múltiplos itens (bundles)
-                if (entry.items) {
-                    entry.items.forEach(item => {
-                        precos[item.id] = entry.finalPrice;
-                        venda.push(item.id);
+    // --- 1. CARREGAMENTO DE DADOS ---
+    async function carregarDados() {
+        $container.html('<div class="loading-msg">Carregando catálogo...</div>');
+
+        try {
+            // [A] Base Cosméticos
+            const resCosmetics = await fetch('https://fortnite-api.com/v2/cosmetics/br?language=pt-BR');
+            const jsonCosmetics = await resCosmetics.json();
+            if (jsonCosmetics.data) {
+                jsonCosmetics.data.forEach(item => {
+                    catalogoMap.set(item.id.toLowerCase(), {
+                        id: item.id,
+                        name: item.name,
+                        displayType: item.type?.displayValue || 'Item',
+                        backendType: item.type?.value || 'misc', 
+                        rarityValue: item.rarity?.value || 'common',
+                        rarityDisplay: item.rarity?.displayValue || 'Comum',
+                        image: item.images?.icon || item.images?.smallIcon,
+                        isNew: false, inShop: false, price: null
+                    });
+                });
+            }
+
+            // [B] Novidades
+            const resNew = await fetch('https://fortnite-api.com/v2/cosmetics/new?language=pt-BR');
+            const jsonNew = await resNew.json();
+            const newItems = jsonNew.data?.items?.br || jsonNew.data?.items || [];
+            newItems.forEach(item => {
+                const id = item.id.toLowerCase();
+                if (catalogoMap.has(id)) {
+                    catalogoMap.get(id).isNew = true;
+                } else {
+                    catalogoMap.set(id, {
+                        id: item.id,
+                        name: item.name,
+                        displayType: item.type?.displayValue || 'Novo',
+                        backendType: item.type?.value || 'misc',
+                        rarityValue: item.rarity?.value || 'common',
+                        rarityDisplay: item.rarity?.displayValue || 'Comum',
+                        image: item.images?.icon || item.images?.smallIcon,
+                        isNew: true, inShop: false, price: null
                     });
                 }
             });
-        }
-        tentarMontar();
-    }).fail(function() { console.error("Erro ao carregar Shop"); tentarMontar(); });
 
-    // 2) COSMÉTICOS (A lista gigante)
-    $.getJSON(urlCosmeticos, function (cosmeticos) {
-        // Atenção: No link /br, a lista está direto em 'data', não em 'data.items'
-        let lista = cosmeticos.data; 
-        if (Array.isArray(lista)) {
-            todos = lista;
-        } else {
-            console.error("Formato de cosméticos inesperado");
-        }
-        tentarMontar();
-    }).fail(function() { console.error("Erro ao carregar Cosméticos"); tentarMontar(); });
+            // [C] Loja
+            const resShop = await fetch('https://fortnite-api.com/v2/shop?language=pt-BR');
+            const jsonShop = await resShop.json();
+            const entries = jsonShop.data?.entries || [];
 
-    // 3) NOVOS
-    $.getJSON(urlNew, function (novosData) {
-        // No link /br/new, a lista pode estar em data.items ou data.build
-        // Vamos tentar pegar de forma segura
-        let lista = novosData.data && novosData.data.items ? novosData.data.items : [];
-        
-        if (Array.isArray(lista)) {
-            novos = lista.map(i => i.id);
-        }
-        tentarMontar();
-    }).fail(function() { console.error("Erro ao carregar Novos"); tentarMontar(); });
+            entries.forEach(entry => {
+                let itensOferta = [];
+                if(entry.items) itensOferta = itensOferta.concat(entry.items.map(i => ({...i, _source: 'item'})));
+                if(entry.tracks) itensOferta = itensOferta.concat(entry.tracks.map(i => ({...i, _source: 'music'})));
+                if(entry.cars) itensOferta = itensOferta.concat(entry.cars.map(i => ({...i, _source: 'car'})));
 
-    // Verifica se tudo carregou
-    function tentarMontar() {
-        carregado++;
-        if (carregado === 3) {
-            console.log("Tudo carregado! Total itens:", todos.length);
-            aplicarFiltros(); // Inicia a primeira renderização
+                if (itensOferta.length === 0 && entry.bundle) {
+                    itensOferta.push({
+                        id: `bundle_${entry.bundle.name.replace(/\s+/g, '')}`,
+                        name: entry.bundle.name,
+                        _source: 'bundle',
+                        images: { icon: entry.bundle.image },
+                    });
+                }
+
+                itensOferta.forEach(subItem => {
+                    if(!subItem.id) return;
+                    const id = subItem.id.toLowerCase();
+                    const preco = entry.finalPrice;
+                    
+                    let imgUrl = subItem.images?.icon || subItem.images?.smallIcon || subItem.albumArt;
+                    if (entry.newDisplayAsset?.materialInstances?.[0]?.images?.Background) {
+                        imgUrl = entry.newDisplayAsset.materialInstances[0].images.Background;
+                    }
+
+                    const nome = subItem.name || subItem.title || entry.bundle?.name || "Item Loja";
+                    
+                    let bType = subItem.type?.value || 'misc';
+                    if(subItem._source === 'music') bType = 'music';
+                    if(subItem._source === 'car') bType = 'car';
+
+                    if (catalogoMap.has(id)) {
+                        const item = catalogoMap.get(id);
+                        item.inShop = true;
+                        item.price = preco;
+                        if (!item.name) item.name = nome;
+                        if (!item.image || item.image.includes('placeholder')) item.image = imgUrl;
+                        if (bType === 'music') item.backendType = 'music';
+                    } else {
+                        catalogoMap.set(id, {
+                            id: subItem.id,
+                            name: nome,
+                            displayType: subItem.type?.displayValue || (bType === 'music' ? 'Música' : 'Loja'),
+                            backendType: bType,
+                            rarityValue: subItem.rarity?.value || 'common',
+                            rarityDisplay: subItem.rarity?.displayValue || 'Loja',
+                            image: imgUrl || 'https://via.placeholder.com/200',
+                            isNew: false, inShop: true, price: preco
+                        });
+                    }
+                });
+            });
+
+            aplicarFiltros();
+
+        } catch (e) {
+            console.error(e);
+            $container.html('<div class="loading-msg" style="color:red">Erro na API.</div>');
         }
     }
 
-    // =========================
-    // LÓGICA DE FILTROS E PAGINAÇÃO
-    // =========================
-
-    // Função principal que decide O QUE mostrar
+    // --- 2. FILTRAGEM ---
     function aplicarFiltros() {
-        // 1. Começa com todos
-        listaFiltrada = todos;
+        const todos = Array.from(catalogoMap.values());
+        
+        const filtrarLoja = $("#filter-shop").is(":checked");
+        const filtrarNovos = $("#filter-new").is(":checked");
 
-        // 2. Filtra por Texto (Pesquisa)
-        if (filtroTexto) {
-            listaFiltrada = listaFiltrada.filter(item => 
-                item.name.toLowerCase().includes(filtroTexto)
-            );
-        }
+        listaVisivel = todos.filter(item => {
+            if (filtroTexto && item.name && !item.name.toLowerCase().includes(filtroTexto)) return false;
+            
+            if (filtroTipo) {
+                if (!item.backendType || !item.backendType.toLowerCase().includes(filtroTipo.toLowerCase())) return false;
+            }
 
-        // 3. Filtra por Tipo (Outfit, Pickaxe, etc)
-        if (filtroTipo) {
-            listaFiltrada = listaFiltrada.filter(item => 
-                item.type && item.type.value.toLowerCase() === filtroTipo
-            );
-        }
+            if (filtroRaridade) {
+                if (!item.rarityValue || item.rarityValue.toLowerCase() !== filtroRaridade.toLowerCase()) return false;
+            }
+            
+            if (filtrarLoja && !item.inShop) return false;
+            if (filtrarNovos && !item.isNew) return false;
 
-        // 4. Filtra por Raridade
-        if (filtroRaridade) {
-            listaFiltrada = listaFiltrada.filter(item => 
-                item.rarity && item.rarity.value.toLowerCase() === filtroRaridade
-            );
-        }
+            return true;
+        });
 
-        // Reseta para página 1 sempre que filtrar
+        listaVisivel.sort((a, b) => {
+            if (a.inShop !== b.inShop) return a.inShop ? -1 : 1;
+            if (a.isNew !== b.isNew) return a.isNew ? -1 : 1;
+            return 0;
+        });
+
         paginaAtual = 1;
         renderizarPagina();
     }
 
-    // Função que desenha a página atual na tela
+    // --- 3. RENDERIZAÇÃO ---
     function renderizarPagina() {
-        const container = $("#catalogo");
-        container.empty(); // Limpa o anterior
-
-        if (listaFiltrada.length === 0) {
-            container.html("<p style='color:white; text-align:center; width:100%;'>Nenhum item encontrado.</p>");
-            $("#numero-pagina").text(0);
+        $container.empty();
+        if (listaVisivel.length === 0) {
+            $container.html('<div class="loading-msg">Nenhum item encontrado com esses filtros.</div>');
+            $statusPagina.text("0 / 0");
             return;
         }
 
-        // Cálculos da paginação
+        const totalPaginas = Math.ceil(listaVisivel.length / itensPorPagina);
         const inicio = (paginaAtual - 1) * itensPorPagina;
         const fim = inicio + itensPorPagina;
-        const itensDaPagina = listaFiltrada.slice(inicio, fim);
+        const itensPagina = listaVisivel.slice(inicio, fim);
 
         let html = "";
-
-        itensDaPagina.forEach(item => {
-            let preco = precos[item.id] || "N/A";
-            let ehNovo = novos.includes(item.id);
-            let estaAVenda = venda.includes(item.id);
-            
-            // Verifica imagem (as vezes icon é null, usa smallIcon)
-            let imgUrl = item.images.icon || item.images.smallIcon || '../img/sem-imagem.png';
-
-            html += montarCard(item, preco, ehNovo, estaAVenda, imgUrl);
+        itensPagina.forEach(item => {
+            html += montarCard(item);
         });
 
-        container.append(html);
-        
-        // Atualiza número da página
-        $("#numero-pagina").text(paginaAtual);
+        $container.append(html);
+        $statusPagina.text(`${paginaAtual} / ${totalPaginas}`);
+        $('html, body').animate({ scrollTop: $(".pesquisa-e-filtros").offset().top - 20 }, 'fast');
     }
 
-    // Montar HTML do Card
-    function montarCard(item, preco, ehNovo, estaAVenda, imgUrl) {
-        let vendaBadge = estaAVenda ? '<img src="../img/icons/icon-venda.png" class="badge-icon" title="Na Loja!">' : '';
-        let novoBadge = ehNovo ? '<img src="../img/icons/icon-novo.png" class="badge-icon" title="Novo!">' : '';
-        
-        // Corrigindo possíveis erros de leitura de propriedade
-        let tipo = item.type ? item.type.displayValue : "Item";
-        let raridade = item.rarity ? item.rarity.displayValue : "Comum";
+    function montarCard(item) {
+        const nome = item.name || "Item sem nome";
+        const tipo = item.displayType || "Cosmético";
+        const rClass = item.rarityValue || "common";
+        const rText = item.rarityDisplay || "Comum";
+        const imgUrl = item.image || 'https://fortnite-api.com/images/cosmetics/br/bid_001_generic/icon.png';
+
+        let badges = "";
+        if (item.isNew) badges += '<span class="badge badge-novo">NOVO</span>';
+        if (item.inShop) badges += '<span class="badge badge-venda">LOJA</span>';
+
+        let btnClass = "btn-indisponivel";
+        let btnText = "Indisponível";
+        let priceDisplay = "N/A"; 
+
+        if (item.inShop && item.price) {
+            btnClass = "btn-comprar";
+            btnText = "Comprar";
+            priceDisplay = item.price; 
+        }
+
+        // --- AQUI ESTÁ A MÁGICA DO LINK ---
+        // Assumindo que o catalogo.php e produto.php estão na mesma pasta (paginas/)
+        // Se catalogo for na raiz, use: "paginas/produto.php?id=${item.id}"
+        const linkDestino = `produto.php?id=${item.id}`;
 
         return `
-          <a href="produto.php?id=${item.id}" class="card-link">
+        <a href="${linkDestino}" class="card-link">
             <div class="card">
-              <img src="${imgUrl}" class="card-img" alt="${item.name}">
-              <div class="card-body">
-                <div class="card-div">
-                  <div class="titulo">
-                    <p class="tipo">${tipo}</p>
-                    <h5 class="card-name">${item.name} ${novoBadge} ${vendaBadge}</h5>
-                  </div>
+                <div class="card-header">
+                    <img src="${imgUrl}" class="card-img" alt="${nome}" loading="lazy" onerror="this.src='https://via.placeholder.com/200?text=Erro'">
+                    <div class="badges-container">${badges}</div>
                 </div>
-                <hr>
-                <div class="card-div">
-                  <p class="valor">V-bucks: <span>${preco}</span></p>
-                  <p class="raridade">${raridade}</p>
+                
+                <div class="card-body">
+                    <div class="card-info-top">
+                        <span class="tipo">${tipo}</span>
+                        <h5 title="${nome}">${nome}</h5>
+                    </div>
+                    <hr>
+                    <div class="card-details">
+                        <div class="valor">
+                            <img src="https://fortnite-api.com/images/vbuck.png" class="vbuck-icon">
+                            <span>${priceDisplay}</span>
+                        </div>
+                        <span class="raridade raridade-${rClass}">${rText}</span>
+                    </div>
+                    
+                    <!-- O botão é apenas visual, pois o card todo é um link (<a>) -->
+                    <button class="btn ${btnClass}">${btnText}</button>
                 </div>
-                <button class="btn-comprar">Ver Detalhes</button>
-              </div>
             </div>
-          </a>
-        `;
+        </a>`;
     }
 
-    // =========================
-    // EVENTOS (CLIQUES E DIGITAÇÃO)
-    // =========================
-
-    // Botão Anterior
-    $("#prev").click(function() {
-        if (paginaAtual > 1) {
-            paginaAtual--;
-            renderizarPagina();
-            $('html, body').animate({ scrollTop: 0 }, 'fast'); // Sobe a tela
-        }
+    // --- 4. EVENTOS ---
+    
+    $(".dropdown-btn").click(function(e) {
+        e.stopPropagation(); 
+        $(".dropdown-menu").not($(this).next()).removeClass("show");
+        $(this).next(".dropdown-menu").toggleClass("show");
     });
 
-    // Botão Próximo
-    $("#next").click(function() {
-        const totalPaginas = Math.ceil(listaFiltrada.length / itensPorPagina);
-        if (paginaAtual < totalPaginas) {
-            paginaAtual++;
-            renderizarPagina();
-            $('html, body').animate({ scrollTop: 0 }, 'fast'); // Sobe a tela
-        }
+    $(document).click(function() {
+        $(".dropdown-menu").removeClass("show");
     });
 
-    // Campo de Pesquisa
-    $("#pesquisa").on("input", function() {
-        filtroTexto = $(this).val().toLowerCase();
-        aplicarFiltros(); // Refaz a lista e volta pra pag 1
-    });
-
-    // Dropdowns (Isso depende de como seu CSS/HTML de dropdown funciona)
-    // Assumindo que você clica no <a> dentro do dropdown-menu
     $(".dropdown-menu a").click(function(e) {
-        e.preventDefault(); // Não recarregar a página
-        
-        // Descobre qual dropdown é (Tipo ou Raridade?)
-        // Subindo até o pai para ver qual botão é
-        let dropdownPai = $(this).closest(".dropdown").find(".dropdown-btn").text().trim();
+        e.preventDefault();
+        const val = $(this).data("value");
+        const parentId = $(this).closest(".dropdown").attr("id");
+        const btn = $(this).closest(".dropdown").find(".dropdown-btn");
+        const text = $(this).text();
 
-        let valorSelecionado = $(this).data("value"); // outfit, legendary, etc.
-
-        if (dropdownPai === "Tipo") {
-            filtroTipo = valorSelecionado;
-            console.log("Filtro Tipo:", filtroTipo);
-        } else if (dropdownPai === "Raridade") {
-            filtroRaridade = valorSelecionado;
-            console.log("Filtro Raridade:", filtroRaridade);
+        if (parentId === "dropdown-tipo") {
+            filtroTipo = val;
+            btn.text(val ? `Tipo: ${text}` : "Tipo");
+        } else {
+            filtroRaridade = val;
+            btn.text(val ? `Raridade: ${text}` : "Raridade");
         }
-
         aplicarFiltros();
     });
 
+    $("#pesquisa").on("keyup", function() { filtroTexto = $(this).val().toLowerCase(); aplicarFiltros(); });
+    $("#filter-shop, #filter-new").on("change", function() { aplicarFiltros(); });
+
+    $("#prev").click(function() { if (paginaAtual > 1) { paginaAtual--; renderizarPagina(); } });
+    $("#next").click(function() { const total = Math.ceil(listaVisivel.length / itensPorPagina); if (paginaAtual < total) { paginaAtual++; renderizarPagina(); } });
+    
+    carregarDados();
 });

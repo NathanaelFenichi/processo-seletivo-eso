@@ -14,7 +14,7 @@
     </div>
     <ul class="nav-paginas">
       <li><a href="index.php" class="active">Home</a></li>
-      <li><a href="paginas/paginas.php">Loja</a></li>
+      <li><a href="paginas/catalogo.php">Loja</a></li>
       <li><a href="paginas/perfil.php">Perfil</a></li>
     </ul>
 

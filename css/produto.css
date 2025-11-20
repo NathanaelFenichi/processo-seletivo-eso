@@ -1,68 +1,67 @@
-/* --- FUNDO GERAL --- */
+/* CONFIGURAÇÕES GERAIS */
+body {
+    background-color: #f0f2f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- LAYOUT PRINCIPAL --- */
 .fundo-moderno {
-    background-color: #f0f2f5; /* Cinza bem claro e limpo */
-    min-height: calc(100vh - 60px);
     display: flex;
     justify-content: center;
-    align-items: center; /* Centraliza o card verticalmente */
+    align-items: center;
+    min-height: calc(100vh - 80px); /* Desconta altura da nav */
     padding: 40px 20px;
 }
 
-/* --- O CARD PRINCIPAL --- */
 .card-produto-especial {
-    background-color: #ffffff;
+    background: white;
     width: 100%;
-    max-width: 1000px;
-    border-radius: 24px; /* Borda bem arredondada */
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05); /* Sombra moderna e difusa */
+    max-width: 1100px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     display: flex;
-    overflow: hidden; /* Garante que nada saia das bordas arredondadas */
+    overflow: hidden;
+    min-height: 600px;
 }
 
-/* --- LADO ESQUERDO (IMAGEM) --- */
+/* --- COLUNA ESQUERDA: IMAGEM --- */
 .box-imagem {
     flex: 1;
-    background-color: #fdfdfd;
-    padding: 40px;
+    background: radial-gradient(circle at center, #f8f9fa 0%, #e9ecef 100%);
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: center;
-    border-right: 1px solid #f0f0f0; /* Divisória sutil */
-}
-
-.fundo-img-suave {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+    padding: 40px;
+    position: relative;
 }
 
 .box-imagem img {
     max-width: 100%;
-    max-height: 500px; /* Limita altura para não esticar demais */
-    height: auto;
+    max-height: 500px;
+    object-fit: contain;
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
     transition: transform 0.3s ease;
 }
 
 .box-imagem img:hover {
-    transform: scale(1.05) rotate(2deg);
+    transform: scale(1.05);
 }
 
-/* --- LADO DIREITO (INFO) --- */
+/* --- COLUNA DIREITA: INFO --- */
 .box-info {
-    flex: 1.1; /* Um pouco mais largo que a imagem */
+    flex: 1;
     padding: 50px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centraliza o conteúdo verticalmente */
+    justify-content: space-between; /* Espalha conteúdo */
 }
 
-/* Cabeçalho */
-.box-info h1 {
+/* Cabeçalho do Produto */
+.cabecalho h1 {
     font-size: 2.5rem;
-    font-weight: 800;
-    color: #1a1a1a;
+    color: #2c3e50;
     margin-bottom: 15px;
+    font-weight: 800;
     line-height: 1.1;
 }
 
@@ -73,151 +72,168 @@
 }
 
 .badge-tipo, .badge-raridade {
-    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
-    padding: 6px 12px;
-    border-radius: 6px;
-    background-color: #f0f4f8;
-    color: #555;
     letter-spacing: 0.5px;
 }
 
-/* --- CAIXA CINZA DA DESCRIÇÃO (O que você gostou na ref) --- */
+.badge-tipo {
+    background-color: #eef2f7;
+    color: #555;
+    border: 1px solid #dfe4ea;
+}
+
+.badge-raridade {
+    background-color: #333;
+    color: white;
+}
+
+/* CORES DE RARIDADE (Dinâmicas) */
+.rarity-common { background-color: #95a5a6; }
+.rarity-uncommon { background-color: #27ae60; }
+.rarity-rare { background-color: #2980b9; }
+.rarity-epic { background-color: #8e44ad; }
+.rarity-legendary { background-color: #d35400; }
+.rarity-icon { background-color: #16a085; }
+.rarity-marvel { background-color: #c0392b; }
+
+/* Descrição */
 .descricao-container-cinza {
-    background-color: #f8f9fa; /* Cinza muito suave */
-    border-radius: 16px;
-    padding: 25px;
-    margin-bottom: 40px;
-    border: 1px solid #edf2f7;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid #33CC99;
+    margin-bottom: 30px;
 }
 
 .desc-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 10px;
 }
 
 .desc-header h3 {
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.1rem;
     color: #333;
-    text-transform: uppercase;
+    margin: 0;
 }
 
 .icone-info {
-    font-size: 0.8rem;
-    background: #e2e8f0;
+    background: #33CC99;
+    color: white;
     width: 20px;
     height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-radius: 50%;
-    color: #777;
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
     font-weight: bold;
-    font-family: serif;
 }
 
 #descricao {
-    font-size: 0.95rem;
-    line-height: 1.6;
     color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
 }
 
-/* --- PREÇO E BOTÕES --- */
+/* Rodapé (Preço e Botões) */
 .rodape-acao {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid #eee;
     padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .preco-box .label {
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: #999;
-    margin-bottom: 2px;
+    margin-bottom: 5px;
 }
 
 .valor-final {
-    font-size: 2rem;
-    font-weight: 900;
-    color: #1da1f2; /* SEU AZUL DE DESTAQUE */
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #33CC99; /* Verde Destaque */
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .botoes-wrapper {
     display: flex;
-    gap: 12px;
-    flex: 1;
-    justify-content: flex-end;
+    gap: 15px;
 }
 
-.btn-azul-full {
-    background-color: #1da1f2;
-    color: #fff;
+.btn-acao {
+    padding: 15px 30px;
+    border-radius: 10px;
     border: none;
-    padding: 14px 30px;
-    border-radius: 12px;
-    font-weight: 700;
     font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 15px rgba(29, 161, 242, 0.3);
-}
-
-.btn-azul-full:hover {
-    background-color: #0c8bd9;
-    transform: translateY(-2px);
-}
-
-.btn-outline {
-    background: transparent;
-    color: #777;
-    border: 2px solid #e2e8f0;
-    padding: 14px 20px;
-    border-radius: 12px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
-.btn-outline:hover {
-    border-color: #cbd5e0;
-    color: #333;
+.btn-acao:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* --- RESPONSIVO --- */
+.btn-azul {
+    background-color: #1da1f2; /* Azul Fortnite */
+    color: white;
+}
+.btn-azul:hover { background-color: #0c85d0; }
+
+.btn-vermelho {
+    background-color: white;
+    color: #e74c3c;
+    border: 2px solid #e74c3c;
+}
+.btn-vermelho:hover {
+    background-color: #fff5f5;
+}
+
+/* --- RESPONSIVIDADE (Celular) --- */
 @media (max-width: 900px) {
     .card-produto-especial {
         flex-direction: column;
     }
-    
+
     .box-imagem {
-        border-right: none;
-        border-bottom: 1px solid #f0f0f0;
-        padding: 30px;
+        padding: 20px;
+        min-height: 300px;
+    }
+    
+    .box-imagem img {
+        max-height: 300px;
     }
 
     .box-info {
-        padding: 30px;
-    }
-
-    .rodape-acao {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
+        padding: 30px 20px;
     }
     
-    .botoes-wrapper {
-        width: 100%;
-    }
-
-    .btn-azul-full, .btn-outline {
-        flex: 1;
+    .rodape-acao {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
         text-align: center;
+    }
+    
+    .preco-box { margin-bottom: 10px; }
+    
+    .botoes-wrapper {
+        flex-direction: column;
     }
 }
