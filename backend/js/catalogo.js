@@ -51,7 +51,10 @@ $(document).ready(function () {
                         image: item.images?.icon || item.images?.smallIcon,
                         isNew: false, 
                         inShop: false, 
-                        price: null
+                        price: null,
+                        regularPrice: null, // NOVO: Pra promo
+                        isPromo: false,     // NOVO: Flag de promoção
+                        added: item.added ? new Date(item.added) : new Date() // NOVO: Data de inclusão
                     });
                 });
             }
@@ -74,7 +77,10 @@ $(document).ready(function () {
                         rarityValue: item.rarity?.value || 'common',
                         rarityDisplay: item.rarity?.displayValue || 'Comum',
                         image: item.images?.icon || item.images?.smallIcon,
-                        isNew: true, inShop: false, price: null
+                        isNew: true, inShop: false, price: null,
+                        regularPrice: null, // NOVO
+                        isPromo: false,     // NOVO
+                        added: item.added ? new Date(item.added) : new Date() // NOVO
                     });
                 }
             });
@@ -103,6 +109,7 @@ $(document).ready(function () {
                     if(!subItem.id) return;
                     const id = subItem.id.toLowerCase();
                     const preco = entry.finalPrice;
+                    const regularPreco = entry.regularPrice; // NOVO: Pra calcular promo
                     
                     let imgUrl = subItem.images?.icon || subItem.images?.smallIcon || subItem.albumArt;
                     if (entry.newDisplayAsset?.materialInstances?.[0]?.images?.Background) {
@@ -119,9 +126,12 @@ $(document).ready(function () {
                         const item = catalogoMap.get(id);
                         item.inShop = true;
                         item.price = preco;
+                        item.regularPrice = regularPreco; // NOVO
+                        item.isPromo = (regularPreco > preco); // NOVO: Calcula se está em promo
                         if (!item.name) item.name = nome;
                         if (!item.image || item.image.includes('placeholder')) item.image = imgUrl;
                         if (bType === 'music') item.backendType = 'music';
+                        if (!item.added && subItem.added) item.added = new Date(subItem.added); // NOVO: Garante data
                     } else {
                         catalogoMap.set(id, {
                             id: subItem.id,
@@ -133,7 +143,10 @@ $(document).ready(function () {
                             image: imgUrl || 'https://via.placeholder.com/200',
                             isNew: false, 
                             inShop: true, 
-                            price: preco
+                            price: preco,
+                            regularPrice: regularPreco, // NOVO
+                            isPromo: (regularPreco > preco), // NOVO
+                            added: subItem.added ? new Date(subItem.added) : new Date() // NOVO
                         });
                     }
                 });
@@ -147,12 +160,18 @@ $(document).ready(function () {
         }
     }
 
-    // --- 2. LÓGICA DE FILTRAGEM (MANTIDA IGUAL) ---
+    // --- 2. LÓGICA DE FILTRAGEM (ATUALIZADA COM DATAS E PROMO) ---
     function aplicarFiltros() {
         const todos = Array.from(catalogoMap.values());
         
         const filtrarLoja = $("#filter-shop").is(":checked");
         const filtrarNovos = $("#filter-new").is(":checked");
+        const filtrarPromo = $("#filter-promo").is(":checked"); // NOVO
+        
+        const dateFromVal = $("#date-from").val();
+        const dateToVal = $("#date-to").val();
+        const dateFrom = dateFromVal ? new Date(dateFromVal) : null;
+        const dateTo = dateToVal ? new Date(dateToVal + 'T23:59:59') : null; // NOVO: Até o fim do dia
 
         listaVisivel = todos.filter(item => {
             if (filtroTexto && item.name && !item.name.toLowerCase().includes(filtroTexto)) return false;
@@ -160,6 +179,12 @@ $(document).ready(function () {
             if (filtroRaridade && (!item.rarityValue || item.rarityValue.toLowerCase() !== filtroRaridade.toLowerCase())) return false;
             if (filtrarLoja && !item.inShop) return false;
             if (filtrarNovos && !item.isNew) return false;
+            if (filtrarPromo && !item.isPromo) return false; // NOVO
+
+            // NOVO: Filtro de datas
+            if (dateFrom && item.added < dateFrom) return false;
+            if (dateTo && item.added > dateTo) return false;
+
             return true;
         });
 
@@ -202,70 +227,100 @@ $(document).ready(function () {
     }
 
     function montarCard(item) {
-        const nome = item.name || "Item sem nome";
-        const tipo = item.displayType || "Cosmético";
-        const rClass = item.rarityValue || "common"; 
-        const rText = item.rarityDisplay || "Comum";
-        const imgUrl = item.image || 'https://fortnite-api.com/images/cosmetics/br/bid_001_generic/icon.png';
+    const nome = item.name || "Item sem nome";
+    const tipo = item.displayType || "Cosmético";
+    const rClass = item.rarityValue || "common"; 
+    const rText = item.rarityDisplay || "Comum";
+    const imgUrl = item.image || 'https://fortnite-api.com/images/cosmetics/br/bid_001_generic/icon.png';
 
-        let badges = "";
-        if (item.isNew) badges += '<span class="badge badge-novo">NOVO</span>';
-        if (item.inShop) badges += '<span class="badge badge-venda">LOJA</span>';
+    let badges = "";
+    if (item.isNew) badges += '<span class="badge badge-novo">NOVO</span>';
+    if (item.inShop) badges += '<span class="badge badge-venda">LOJA</span>';
+    if (item.isPromo) badges += '<span class="badge badge-promo">PROMO</span>';
 
-        // --- NOVO: Lógica do Botão ADQUIRIDO ---
-        let btnClass = "btn-indisponivel";
-        let btnText = "Ver Detalhes";
-        let priceDisplay = "Ver"; 
-        let isDisabled = "";
+    // --- Lógica do Botão ADQUIRIDO ---
+    let btnClass = "btn-indisponivel";
+    let btnText = "Ver Detalhes";
+    let priceDisplay = "Ver"; 
+    let isDisabled = "";
 
-        // 1. Verifica se o usuário JÁ TEM o item
-        const jaTem = meusItens.includes(item.id.toLowerCase());
+    // 1. Verifica se o usuário JÁ TEM o item
+    const jaTem = meusItens.includes(item.id.toLowerCase());
 
-        if (jaTem) {
-            btnClass = "btn-adquirido"; // Você precisa criar esse CSS se quiser mudar a cor
-            btnText = "ADQUIRIDO";
-            priceDisplay = "OK";
-            isDisabled = "disabled"; // Opcional: desativa o clique no botão
-        } 
-        // 2. Se não tem, verifica se está na loja
-        else if (item.inShop && item.price) {
-            btnClass = "btn-comprar";
-            btnText = "Comprar";
+    if (jaTem) {
+        btnClass = "btn-adquirido";
+        btnText = "ADQUIRIDO";
+        priceDisplay = "OK";
+        isDisabled = "disabled";
+    } 
+    // 2. Se não tem, verifica se está na loja
+    else if (item.inShop && item.price) {
+        btnClass = "btn-comprar";
+        btnText = "Comprar";
+        if (item.isPromo) {  
+            priceDisplay = `<span class="old-price">${item.regularPrice}</span> <span class="new-price">${item.price}</span>`;
+        } else {
             priceDisplay = item.price; 
         }
-
-        const linkDestino = `produto.php?id=${item.id}`;
-
-        // Ajustei o HTML do botão para aceitar o 'isDisabled' e mudei o ícone do vbuck
-        return `
-        <a href="${linkDestino}" class="card-link">
-            <div class="card">
-                <div class="card-header">
-                    <img src="${imgUrl}" class="card-img" alt="${nome}" loading="lazy" onerror="this.src='https://via.placeholder.com/200?text=Erro'">
-                    <div class="badges-container">${badges}</div>
-                </div>
-                
-                <div class="card-body">
-                    <div class="card-info-top">
-                        <span class="tipo">${tipo}</span>
-                        <h5 title="${nome}">${nome}</h5>
-                    </div>
-                    <hr>
-                    <div class="card-details">
-                        <div class="valor">
-                            ${(item.inShop && !jaTem) ? '<img src="../img/icons/vbuck.png" class="vbuck-icon">' : ''}
-                            <span>${priceDisplay}</span>
-                        </div>
-                        <span class="raridade raridade-${rClass}">${rText}</span>
-                    </div>
-                    
-                    <button class="btn ${btnClass}" ${isDisabled}>${btnText}</button>
-                </div>
-            </div>
-        </a>`;
     }
 
-    // --- 4. EVENTOS (MANTIDOS IGUAIS) ---
+    const linkDestino = `produto.php?id=${item.id}`;
+
+    // NOVO: Se for promo, coloca preço "em cima" (depois do nome)
+    let promoPriceHTML = '';
+    if (item.isPromo && !jaTem && item.inShop) {
+        promoPriceHTML = `
+            <div class="promo-price-top">
+                <img src="../img/icons/vbuck.png" class="vbuck-icon">
+                ${priceDisplay}
+            </div>
+        `;
+    }
+
+    // Preço normal fica em .valor se não for promo
+    let normalPriceHTML = '';
+    if (!item.isPromo && item.inShop && !jaTem) {
+        normalPriceHTML = `
+            <div class="valor">
+                <img src="../img/icons/vbuck.png" class="vbuck-icon">
+                <span>${priceDisplay}</span>
+            </div>
+        `;
+    } else if (!item.inShop || jaTem) {
+        normalPriceHTML = `
+            <div class="valor">
+                <span>${priceDisplay}</span>
+            </div>
+        `;
+    }
+
+    return `
+    <a href="${linkDestino}" class="card-link">
+        <div class="card">
+            <div class="card-header">
+                <img src="${imgUrl}" class="card-img" alt="${nome}" loading="lazy" onerror="this.src='https://via.placeholder.com/200?text=Erro'">
+                <div class="badges-container">${badges}</div>
+            </div>
+            
+            <div class="card-body">
+                <div class="card-info-top">
+                    <span class="tipo">${tipo}</span>
+                    <h5 title="${nome}">${nome}</h5>
+                    ${promoPriceHTML}  <!-- NOVO: Preço promo aqui em cima -->
+                </div>
+                <hr>
+                <div class="card-details">
+                    ${normalPriceHTML}  <!-- Preço normal aqui embaixo -->
+                    <span class="raridade raridade-${rClass}">${rText}</span>
+                </div>
+                
+                <button class="btn ${btnClass}" ${isDisabled}>${btnText}</button>
+            </div>
+        </div>
+    </a>`;
+}
+
+    // --- 4. EVENTOS (ATUALIZADOS COM DATAS E PROMO) ---
     $(".dropdown-btn").click(function(e) {
         e.stopPropagation(); 
         $(".dropdown-menu").not($(this).next()).removeClass("show");
@@ -298,7 +353,7 @@ $(document).ready(function () {
         aplicarFiltros(); 
     });
 
-    $("#filter-shop, #filter-new").on("change", function() { 
+    $("#filter-shop, #filter-new, #filter-promo, #date-from, #date-to").on("change", function() { // NOVO: Eventos pra promo e datas
         aplicarFiltros(); 
     });
 

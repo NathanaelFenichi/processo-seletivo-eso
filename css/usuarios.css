@@ -1,0 +1,157 @@
+.user-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-list li {
+    background: #ffffff;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 5px solid #33CC99;
+    box-shadow: -4px 0 10px rgba(51, 204, 153, 0.1), 2px 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.user-list li:hover {
+    transform: scale(1.02);
+    box-shadow: -6px 0 15px rgba(51, 204, 153, 0.4), 4px 4px 12px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.user-check {
+    color: #555;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 1.1em;
+    background: #f4f4f4;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 15px;
+}
+
+.user-list li span:nth-child(2) {
+    color: #333;
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+.user-vbucks {
+    color: #00bcd4;
+    font-weight: 800;
+    background-color: rgba(0, 188, 212, 0.1);
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-right: 20px;
+    white-space: nowrap;
+}
+
+button.user-link {
+    color: #33CC99;
+    background: transparent;
+    border: 2px solid transparent;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+button.user-link:hover {
+    color: #fff;
+    background-color: #33CC99;
+    box-shadow: 0 2px 8px rgba(51, 204, 153, 0.4);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .user-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .user-link {
+        width: 100%;
+        text-align: center;
+        background-color: #f0fcf8;
+        margin-top: 5px;
+    }
+
+    .user-vbucks {
+        margin-right: 0;
+    }
+}
+
+.modal-container {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-container.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    position: relative;
+    animation: modalSlideDown 0.3s ease;
+}
+
+@keyframes modalSlideDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.close-btn {
+    color: #999;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.compra-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid #33CC99;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+.modal-footer {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.btn-fechar {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}

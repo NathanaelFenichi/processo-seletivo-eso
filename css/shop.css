@@ -56,7 +56,7 @@ nav {
     padding: 6px 12px;
     border-radius: 16px;
     font-size: 14px;
-    transition: 0.3s;
+    transition: color 0.3s, background 0.3s;
 }
 
 .nav-paginas a:hover,
@@ -74,11 +74,12 @@ nav button {
     border-radius: 10px;
     color: white;
     cursor: pointer;
-    transition: 0.3s;
+    transition: background 0.3s, transform 0.2s;
 }
 
 nav button:hover {
     background: #28a085;
+    transform: translateY(-2px);
 }
 
 /* --- LAYOUT --- */
@@ -110,6 +111,11 @@ nav button:hover {
     border: 1px solid #eee;
     position: relative;
     z-index: 200;
+    transition: box-shadow 0.3s;
+}
+
+.barra-Pesquisa:focus-within {
+    box-shadow: 0 4px 12px rgba(51, 204, 153, 0.2);
 }
 
 #pesquisa {
@@ -120,7 +126,38 @@ nav button:hover {
     color: #333;
 }
 
-/* --- DROPDOWNS --- */
+/* --- NOVO: Estilos pro intervalo de datas (melhorado) --- */
+.date-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.date-range label {
+    font-size: 14px;
+    color: #555;
+    font-weight: 600;
+}
+
+.date-range input[type="date"] {
+    border: 1px solid #ddd;
+    outline: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+}
+
+.date-range input[type="date"]:focus,
+.date-range input[type="date"]:hover {
+    border-color: #33CC99;
+    background: white;
+}
+
+/* --- DROPDOWNS (melhorado com animação) --- */
 .dropdown {
     position: relative;
 }
@@ -138,12 +175,12 @@ nav button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.3s ease;
+    transition: background 0.3s, color 0.3s;
 }
 
 .dropdown-btn:hover {
     color: #33CC99;
-    background-color: rgba(51, 204, 153, 0.15);
+    background: rgba(51, 204, 153, 0.15);
 }
 
 .dropdown-btn::after {
@@ -151,6 +188,10 @@ nav button:hover {
     font-size: 0.8em;
     margin-left: 10px;
     transition: transform 0.3s;
+}
+
+.dropdown-btn.active::after {
+    transform: rotate(180deg);
 }
 
 .dropdown-menu {
@@ -165,10 +206,15 @@ nav button:hover {
     z-index: 300;
     border: 1px solid #eee;
     overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s, transform 0.2s;
 }
 
 .dropdown-menu.show {
     display: block;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .dropdown-menu a {
@@ -177,7 +223,7 @@ nav button:hover {
     color: #333;
     text-decoration: none;
     font-size: 14px;
-    transition: background 0.2s;
+    transition: background 0.2s, color 0.2s;
 }
 
 .dropdown-menu a:hover {
@@ -185,7 +231,7 @@ nav button:hover {
     color: #33CC99;
 }
 
-/* --- CHECKBOXES --- */
+/* --- CHECKBOXES (melhorado com animação) --- */
 .filtros-extra {
     display: flex;
     gap: 15px;
@@ -204,7 +250,7 @@ nav button:hover {
     cursor: pointer;
     font-weight: 600;
     color: #555;
-    transition: 0.2s;
+    transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.2s;
     user-select: none;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
@@ -213,12 +259,14 @@ nav button:hover {
     background: #f9f9f9;
     border-color: #33CC99;
     color: #33CC99;
+    transform: translateY(-2px);
 }
 
 .checkbox-pill:has(input:checked) {
     background: #33CC99;
     border-color: #33CC99;
     color: white;
+    transform: translateY(0);
 }
 
 .checkbox-pill input {
@@ -226,19 +274,38 @@ nav button:hover {
     width: 16px;
     height: 16px;
     cursor: pointer;
+    transition: accent-color 0.3s;
 }
 
 .checkbox-pill input:not(:checked) {
     accent-color: #33CC99;
 }
 
-/* --- GRID & CARDS --- */
+/* --- GRID & CARDS (melhorado com responsividade) --- */
 .catalogo {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 25px;
     margin: 40px 0;
     min-height: 400px;
+}
+
+@media (max-width: 1200px) {
+    .catalogo {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .catalogo {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .catalogo {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .card-link {
@@ -252,7 +319,7 @@ nav button:hover {
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    transition: 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
     display: flex;
     flex-direction: column;
     height: 460px;
@@ -280,7 +347,7 @@ nav button:hover {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    transition: 0.3s;
+    transition: transform 0.3s;
     filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.1));
 }
 
@@ -305,6 +372,7 @@ nav button:hover {
     color: white;
     text-transform: uppercase;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
 }
 
 .badge-novo {
@@ -314,6 +382,11 @@ nav button:hover {
 
 .badge-venda {
     background: #33CC99;
+}
+
+.badge-promo {  /* NOVO: Badge pra promoção */
+    background: #e74c3c;
+    color: white;
 }
 
 .card-body {
@@ -367,6 +440,19 @@ nav button:hover {
     font-weight: 800;
 }
 
+.valor .old-price {  /* NOVO: Preço antigo riscado */
+    text-decoration: line-through;
+    color: #999;
+    font-size: 14px;
+    margin-right: 6px;
+}
+
+.valor .new-price {  /* NOVO: Preço novo em destaque */
+    color: #e74c3c;
+    font-weight: 900;
+    font-size: 16px;
+}
+
 .vbuck-icon {
     width: 18px;
     height: 18px;
@@ -402,7 +488,7 @@ nav button:hover {
     font-size: 14px;
     cursor: pointer;
     border: none;
-    transition: 0.2s;
+    transition: background 0.3s, transform 0.2s;
     text-align: center;
 }
 
@@ -423,7 +509,8 @@ nav button:hover {
     color: #aaa;
     border: 1px solid #ddd;
 }
-.btn-adquirido{
+
+.btn-adquirido {
     color: #1da1f2;
     background: #ffffff;
     transform: translateY(2px);
@@ -446,10 +533,12 @@ nav button:hover {
     color: white;
     font-weight: 700;
     cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
 }
 
 .btn-pag:hover {
     background: #28a085;
+    transform: translateY(-2px);
 }
 
 .num-pag {
@@ -466,4 +555,28 @@ nav button:hover {
     padding: 50px;
     font-size: 18px;
     color: #888;
+}
+
+
+/* Adicione na .card-body ou onde preferir */
+.promo-price-top {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+    color: #444;
+    margin-top: 8px;
+    font-size: 18px;  /* Maior pra destacar */
+}
+
+.promo-price-top .old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 16px;
+    margin-right: 6px;
+}
+
+.promo-price-top .new-price {
+    color: #e74c3c;
+    font-weight: 900;
 }

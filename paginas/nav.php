@@ -8,6 +8,7 @@ $paginaAtual = basename($_SERVER['PHP_SELF']);
 if ($paginaAtual == 'index.php') {
     $pathHome   = "index.php";
     $pathLoja   = "paginas/catalogo.php";
+    $pathUsuarios = "paginas/usuarios.php";  // NOVO: Caminho pra usuários
     $pathPerfil = "paginas/perfil.php";
     $pathLogin  = "paginas/login.php";
     $pathLogout = "backend/logout.php";
@@ -15,6 +16,7 @@ if ($paginaAtual == 'index.php') {
 } else {
     $pathHome   = "../index.php";
     $pathLoja   = "catalogo.php";
+    $pathUsuarios = "usuarios.php";  // NOVO
     $pathPerfil = "perfil.php";
     $pathLogin  = "login.php";
     $pathLogout = "../backend/logout.php";
@@ -56,6 +58,7 @@ if ($paginaAtual == 'login.php' || $paginaAtual == 'cadastro.php') {
     <ul class="nav-paginas">
         <li><a href="<?php echo $pathHome; ?>">Home</a></li>
         <li><a href="<?php echo $pathLoja; ?>">Loja</a></li>
+        <li><a href="<?php echo $pathUsuarios; ?>">Usuários</a></li>  <!-- NOVO: Aba Usuários -->
         <li><a href="<?php echo $linkDoPerfil; ?>">Perfil</a></li>
     </ul>
 

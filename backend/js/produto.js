@@ -1,149 +1,150 @@
 $(document).ready(function () {
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const itemId = urlParams.get('id');
-    const $container = $("#produto-detalhes");
+    const params = new URLSearchParams(window.location.search);
+    const itemId = decodeURIComponent(params.get('id'));
 
-    if (!itemId) {
-        $container.html('<p style="color: red;">Erro: ID do item não fornecido.</p>');
-        return;
+    if (!itemId) { $("#nome").text("Item não especificado."); return; }
+
+    const urlItem = `https://fortnite-api.com/v2/cosmetics/br/${itemId}?language=pt-BR`;
+    const urlShop = 'https://fortnite-api.com/v2/shop?language=pt-BR';
+
+    let precoItem = 0;
+    let jaPossui = false; // Estado local
+
+    // --- 1. VERIFICA SE JÁ TEM O ITEM (Chama PHP) ---
+    $.ajax({
+        url: '../backend/verificar_posse.php',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ id: itemId }),
+        success: function(res) {
+            if (res.tem_item) {
+                jaPossui = true;
+                atualizarBotao(); // Já muda o botão para verde
+            }
+        }
+    });
+
+    // --- 2. CARREGA DADOS VISUAIS ---
+    $.getJSON(urlItem, function (res) {
+        if (res.data) renderizarTela(res.data);
+    }).fail(function() {
+        console.log("Buscando detalhes na loja...");
+    });
+
+    // --- 3. VERIFICA PREÇO NA LOJA ---
+    $.getJSON(urlShop, function (shop) {
+        let estaNaLoja = false;
+
+        if (shop.data && shop.data.entries) {
+            shop.data.entries.forEach(entry => {
+                let itens = [].concat(entry.items || [], entry.tracks || [], entry.cars || []);
+                const achou = itens.find(i => i.id.toLowerCase() === itemId.toLowerCase());
+                
+                // Verifica Bundle/Pacote
+                let isBundle = false;
+                if (entry.bundle && entry.bundle.name) {
+                    const bundleId = `bundle_${entry.bundle.name.replace(/\s+/g, '')}`;
+                    if (decodeURIComponent(bundleId) === itemId) isBundle = true;
+                }
+
+                if (achou || isBundle) {
+                    estaNaLoja = true;
+                    precoItem = entry.finalPrice;
+                    
+                    // Se API principal falhou, usa dados da loja
+                    if ($("#nome").text().includes("Carregando")) {
+                        const dadosLoja = achou || {
+                            name: entry.bundle.name,
+                            description: "Pacote da Loja",
+                            type: { displayValue: 'Pacote' },
+                            images: { featured: entry.bundle.image }
+                        };
+                        renderizarTela(dadosLoja);
+                    }
+                }
+            });
+        }
+
+        const $preco = $("#preco");
+        if (estaNaLoja) {
+            $preco.html(`${precoItem} <img src="../img/icons/vbuck.png" width="24" style="vertical-align:bottom">`);
+            $preco.css("color", "#33CC99");
+            atualizarBotao(); // Garante estado correto
+        } else {
+            $preco.text("Indisponível");
+            $preco.css("color", "#aaa");
+            if (!jaPossui) $(".btn-comprar").hide();
+        }
+    });
+
+    function renderizarTela(item) {
+        $("#nome").text(item.name || item.title || "Item");
+        $("#descricao").text(item.description || "Sem descrição.");
+        $("#tipo").text(item.type ? item.type.displayValue : "Cosmético");
+        
+        const img = item.images?.featured || item.images?.icon || item.albumArt || '../img/sem-imagem.png';
+        $("#imagem").attr("src", img);
+
+        if (item.rarity) {
+            $("#raridade").text(item.rarity.displayValue)
+                .addClass(`rarity-${item.rarity.value ? item.rarity.value.toLowerCase() : 'common'}`);
+        }
+        document.title = `${item.name} - Detalhes`;
     }
 
-    async function carregarDetalhes() {
-        try {
-            const response = await fetch(`https://fortnite-api.com/v2/cosmetics/br/${itemId}?language=pt-BR`);
-            const data = await response.json();
-
-            if (data && data.data) {
-                const item = data.data;
-                const detalhesHtml = criarDetalhesHtml(item);
-                $container.html(detalhesHtml);
-
-                configurarBotoes(item);
-
-            } else {
-                $container.html('<p style="color: red;">Erro: Item não encontrado.</p>');
-            }
-
-        } catch (error) {
-            console.error("Erro ao carregar detalhes:", error);
-            $container.html('<p style="color: red;">Erro ao conectar com a API.</p>');
+    function atualizarBotao() {
+        const $btn = $(".btn-comprar");
+        if (jaPossui) {
+            $btn.text("ADQUIRIDO ✓")
+                .css("background-color", "#27ae60")
+                .prop("disabled", true)
+                .show();
+        } else {
+            $btn.text("Adicionar ao Carrinho")
+                .css("background-color", "#1da1f2")
+                .prop("disabled", false)
+                .show();
         }
     }
 
-    function criarDetalhesHtml(item) {
-        const nome = item.name || "Nome não disponível";
-        const tipo = item.type ? item.type.displayValue : "Tipo não disponível";
-        const raridade = item.rarity ? item.rarity.displayValue : "Comum";
-        const descricao = item.description || "Descrição não disponível.";
-        const imagem = item.images ? item.images.icon : "https://via.placeholder.com/300?text=Sem+Imagem";
+    // --- 4. AÇÃO DE COMPRAR ---
+    $(".btn-comprar").click(function() {
+        if (jaPossui) return;
 
-        return `
-            <div class="produto-header">
-                <img src="${imagem}" alt="${nome}" class="produto-img" onerror="this.src='https://via.placeholder.com/300?text=Erro'">
-                <div class="produto-info">
-                    <h1>${nome}</h1>
-                    <p class="tipo">${tipo}</p>
-                    <p class="raridade raridade-${raridade.toLowerCase()}">${raridade}</p>
-                    <p class="descricao">${descricao}</p>
-                </div>
-            </div>
+        if (!confirm(`Comprar por ${precoItem} V-Bucks?`)) return;
 
-            <div class="produto-acoes">
-                <button id="btn-comprar" class="btn btn-comprar">Comprar</button>
-                <button id="btn-devolver" class="btn btn-devolver" style="display: none;">Devolver</button>
-                <button id="btn-voltar" class="btn btn-voltar">Voltar à Loja</button>
-            </div>
-        `;
-    }
+        const $btn = $(this);
+        $btn.text("Processando...");
 
-    function configurarBotoes(item) {
-        const $btnComprar = $("#btn-comprar");
-        const $btnDevolver = $("#btn-devolver");
-        const $btnVoltar = $("#btn-voltar");
-
-        $btnVoltar.click(function () {
-            window.location.href = "../catalogo.php";
+        $.ajax({
+            url: '../backend/comprar.php',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id: itemId,
+                preco: precoItem
+            }),
+            success: function(res) {
+                if (res.sucesso) {
+                    alert("🎉 " + res.msg);
+                    jaPossui = true;
+                    atualizarBotao();
+                    // Atualiza saldo visualmente
+                    if(res.novo_saldo !== undefined) $(".qtd-V-bucks h2").text(res.novo_saldo);
+                } else {
+                    alert("❌ " + res.msg);
+                    atualizarBotao(); // Reseta texto
+                }
+            },
+            error: function() {
+                alert("Erro de conexão.");
+                atualizarBotao();
+            }
         });
+    });
 
-        verificarPosse(item.id).then(temItem => {
-            if (temItem) {
-                $btnComprar.hide();
-                $btnDevolver.show();
-
-                $btnDevolver.click(function () {
-                    devolverItem(item.id);
-                });
-
-            } else {
-                $btnComprar.show();
-                $btnDevolver.hide();
-
-                $btnComprar.click(function () {
-                    comprarItem(item.id, item.price || 1000);
-                });
-            }
-        });
-    }
-
-    async function verificarPosse(id) {
-        try {
-            const response = await fetch('../backend/verifica_Posse.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
-            });
-            const data = await response.json();
-            return data.tem_item || false;
-        } catch (error) {
-            console.error("Erro ao verificar posse:", error);
-            return false;
-        }
-    }
-
-    async function comprarItem(id, preco) {
-        try {
-            const response = await fetch('../backend/comprar.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id, preco: preco })
-            });
-            const data = await response.json();
-
-            if (data.sucesso) {
-                alert("Compra realizada com sucesso!");
-                location.reload();
-            } else {
-                alert("Erro: " + data.msg);
-            }
-        } catch (error) {
-            console.error("Erro ao comprar:", error);
-            alert("Erro ao processar a compra.");
-        }
-    }
-
-    async function devolverItem(id) {
-        if (!confirm("Tem certeza que deseja devolver este item?")) return;
-
-        try {
-            const response = await fetch('../backend/devolver.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_compra: id })
-            });
-            const data = await response.json();
-
-            if (data.sucesso) {
-                alert("Item devolvido com sucesso!");
-                location.reload();
-            } else {
-                alert("Erro: " + data.msg);
-            }
-        } catch (error) {
-            console.error("Erro ao devolver:", error);
-            alert("Erro ao processar a devolução.");
-        }
-    }
-
-    carregarDetalhes();
+    $(".btn-voltar").click(function() {
+        window.history.back();
+    });
 });

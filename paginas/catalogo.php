@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Loja Fortnite - Preview Completo</title>
   
-  <!-- Importando CSS Externo -->
   <link rel="stylesheet" href="../css/shop.css">
   <link rel="stylesheet" href="../css/geral.css">
 
-  <!-- Importando os js -->
-  <script src="../backend/js/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
   <script src="../backend/js/catalogo.js"></script>
 </head>
 <body>
@@ -49,6 +48,14 @@
             <a href="#" data-value="marvel">Marvel</a>
           </div>
         </div>
+
+        <!-- NOVO: Intervalo de datas -->
+        <div class="date-range">
+          <label for="date-from">De:</label>
+          <input type="date" id="date-from">
+          <label for="date-to">Até:</label>
+          <input type="date" id="date-to">
+        </div>
       </div>
 
       <div class="filtros-extra">
@@ -59,6 +66,11 @@
         <label class="checkbox-pill">
             <input type="checkbox" id="filter-new">
             Novos
+        </label>
+        <!-- NOVO: Em Promoção -->
+        <label class="checkbox-pill">
+            <input type="checkbox" id="filter-promo">
+            Em Promoção
         </label>
       </div>
     </section>
@@ -72,7 +84,5 @@
     </div>
   </main>
 
-  <script src="catalogo.js"></script>
-
-</body>
+  </body>
 </html>
