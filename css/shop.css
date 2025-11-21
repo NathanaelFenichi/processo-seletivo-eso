@@ -423,6 +423,12 @@ nav button:hover {
     color: #aaa;
     border: 1px solid #ddd;
 }
+.btn-adquirido{
+    color: #1da1f2;
+    background: #ffffff;
+    transform: translateY(2px);
+    border: 2px solid #1da1f2;
+}
 
 .paginação {
     display: flex;

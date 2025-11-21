@@ -98,44 +98,82 @@ $historico = $stmtCompras->get_result();
     </section>
   </main>
 
-  <script>
+<script>
     $(document).ready(function() {
-        // Carregar Imagens
+        // --- CARREGAMENTO DE IMAGENS ---
         $('.item-compra').each(function() {
             const $card = $(this);
             const idItem = $card.data('api-id');
-            if(idItem.startsWith('bundle_')) {
-                $card.find('.nome-item').text(idItem.replace('bundle_', '').replace(/_/g, ' '));
-                $card.find('.item-img').attr('src', '../img/sem-imagem.png');
+            const $img = $card.find('.item-img');
+            const $nome = $card.find('.nome-item');
+            const $tipo = $card.find('.tipo');
+
+            // Caso 1: É um Pacote (Bundle) criado manualmente
+            if (String(idItem).startsWith('bundle_')) {
+                // Tenta limpar o nome (remove 'bundle_' e underscores)
+                let nomeLimpo = idItem.replace('bundle_', '').replace(/_/g, ' ');
+                $nome.text(nomeLimpo);
+                $tipo.text("Pacote Promocional");
+                
+                // Tente usar uma imagem genérica online se não tiver a local
+                // Substitua por uma imagem que exista na sua pasta img/
+                $img.attr('src', 'https://fortnite-api.com/images/cosmetics/br/bid_001_generic/icon.png'); 
                 return;
             }
-            $.getJSON(`https://fortnite-api.com/v2/cosmetics/br/${idItem}?language=pt-BR`, function(res) {
-                if(res.data) {
-                    $card.find('.item-img').attr('src', res.data.images.smallIcon || res.data.images.icon);
-                    $card.find('.nome-item').text(res.data.name);
-                    if(res.data.type) $card.find('.tipo').text(res.data.type.displayValue);
+
+            // Caso 2: É um item normal -> Busca na API
+            $.ajax({
+                url: `https://fortnite-api.com/v2/cosmetics/br/${idItem}?language=pt-BR`,
+                dataType: 'json',
+                success: function(res) {
+                    if(res.data) {
+                        const imagemFinal = res.data.images.smallIcon || res.data.images.icon;
+                        $img.attr('src', imagemFinal);
+                        $nome.text(res.data.name);
+                        if(res.data.type) $tipo.text(res.data.type.displayValue);
+                    }
+                },
+                error: function() {
+                    console.log("Erro ao carregar imagem do item:", idItem);
+                    $nome.text("Item Indisponível (API)");
+                    // Imagem de erro
+                    $img.attr('src', 'https://fortnite-api.com/images/cosmetics/br/bid_001_generic/icon.png'); 
                 }
             });
         });
     });
 
-    // Função Devolver
+    // --- FUNÇÃO DEVOLVER ---
     function devolverItem(idCompra) {
-        if(!confirm("Deseja devolver este item e recuperar seus V-Bucks?")) return;
+        if(!confirm("Tem certeza? Essa ação removerá o item e devolverá os V-Bucks.")) return;
+
+        // Muda texto do botão para o usuário saber que algo está acontecendo
+        const $btn = $(`#compra-${idCompra} button`);
+        const textoOriginal = $btn.text();
+        $btn.text("Processando...").prop("disabled", true);
+
         $.ajax({
             url: '../backend/devolver.php',
             method: 'POST',
-            contentType: 'application/json',
+            dataType: 'json', // Força esperar um JSON
             data: JSON.stringify({ id_compra: idCompra }),
             success: function(res) {
                 if(res.sucesso) {
-                    alert("Sucesso: " + res.msg);
-                    location.reload();
+                    alert("✅ " + res.msg);
+                    // Remove o card da tela suavemente
+                    $(`#compra-${idCompra}`).fadeOut(500, function(){ $(this).remove(); });
+                    // Atualiza a página depois de um tempo para atualizar o saldo na nav
+                    setTimeout(() => location.reload(), 1000);
                 } else {
-                    alert("Erro: " + res.msg);
+                    alert("❌ Erro: " + (res.msg || "Erro desconhecido"));
+                    $btn.text(textoOriginal).prop("disabled", false);
                 }
             },
-            error: function() { alert("Erro ao comunicar com o servidor."); }
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText); // Para você ver o erro no Console do navegador (F12)
+                alert("Erro de sistema! Abra o console (F12) para ver detalhes.");
+                $btn.text(textoOriginal).prop("disabled", false);
+            }
         });
     }
   </script>

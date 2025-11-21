@@ -1,14 +1,20 @@
 $(document).ready(function () {
     
-    // --- VARIÁVEIS E CONFIGURAÇÕES ---
+    // --- CONFIGURAÇÕES E VARIÁVEIS GLOBAIS ---
     let catalogoMap = new Map(); 
     let listaVisivel = [];       
     let paginaAtual = 1;
     const itensPorPagina = 25;
+    
+    // --- NOVO: Lista de itens que o usuário já tem ---
+    let meusItens = []; 
+
+    // Variáveis de Filtro
     let filtroTexto = "";
     let filtroTipo = "";
     let filtroRaridade = "";
 
+    // Elementos do DOM
     const $container = $("#catalogo");
     const $statusPagina = $("#numero-pagina");
 
@@ -17,9 +23,22 @@ $(document).ready(function () {
         $container.html('<div class="loading-msg">Carregando catálogo...</div>');
 
         try {
-            // [A] Base Cosméticos
+            // --- NOVO: [0] Busca itens que o usuário já comprou ---
+            // Fazemos isso antes ou junto com a API para garantir que sabemos o que ele tem
+            try {
+                const resObtidos = await fetch('../backend/obtidos.php');
+                const jsonObtidos = await resObtidos.json();
+                if (jsonObtidos.sucesso) {
+                    meusItens = jsonObtidos.ids; // Guarda os IDs num array global
+                }
+            } catch (err) {
+                console.log("Usuário não logado ou erro ao buscar itens obtidos.");
+            }
+
+            // [A] Busca Base de Cosméticos (Todos os itens)
             const resCosmetics = await fetch('https://fortnite-api.com/v2/cosmetics/br?language=pt-BR');
             const jsonCosmetics = await resCosmetics.json();
+            
             if (jsonCosmetics.data) {
                 jsonCosmetics.data.forEach(item => {
                     catalogoMap.set(item.id.toLowerCase(), {
@@ -30,15 +49,18 @@ $(document).ready(function () {
                         rarityValue: item.rarity?.value || 'common',
                         rarityDisplay: item.rarity?.displayValue || 'Comum',
                         image: item.images?.icon || item.images?.smallIcon,
-                        isNew: false, inShop: false, price: null
+                        isNew: false, 
+                        inShop: false, 
+                        price: null
                     });
                 });
             }
 
-            // [B] Novidades
+            // [B] Busca Itens "Novos"
             const resNew = await fetch('https://fortnite-api.com/v2/cosmetics/new?language=pt-BR');
             const jsonNew = await resNew.json();
             const newItems = jsonNew.data?.items?.br || jsonNew.data?.items || [];
+            
             newItems.forEach(item => {
                 const id = item.id.toLowerCase();
                 if (catalogoMap.has(id)) {
@@ -57,7 +79,7 @@ $(document).ready(function () {
                 }
             });
 
-            // [C] Loja
+            // [C] Busca Itens da Loja Diária
             const resShop = await fetch('https://fortnite-api.com/v2/shop?language=pt-BR');
             const jsonShop = await resShop.json();
             const entries = jsonShop.data?.entries || [];
@@ -109,7 +131,9 @@ $(document).ready(function () {
                             rarityValue: subItem.rarity?.value || 'common',
                             rarityDisplay: subItem.rarity?.displayValue || 'Loja',
                             image: imgUrl || 'https://via.placeholder.com/200',
-                            isNew: false, inShop: true, price: preco
+                            isNew: false, 
+                            inShop: true, 
+                            price: preco
                         });
                     }
                 });
@@ -119,11 +143,11 @@ $(document).ready(function () {
 
         } catch (e) {
             console.error(e);
-            $container.html('<div class="loading-msg" style="color:red">Erro na API.</div>');
+            $container.html('<div class="loading-msg" style="color:red">Erro ao conectar com a API do Fortnite.</div>');
         }
     }
 
-    // --- 2. FILTRAGEM ---
+    // --- 2. LÓGICA DE FILTRAGEM (MANTIDA IGUAL) ---
     function aplicarFiltros() {
         const todos = Array.from(catalogoMap.values());
         
@@ -132,18 +156,10 @@ $(document).ready(function () {
 
         listaVisivel = todos.filter(item => {
             if (filtroTexto && item.name && !item.name.toLowerCase().includes(filtroTexto)) return false;
-            
-            if (filtroTipo) {
-                if (!item.backendType || !item.backendType.toLowerCase().includes(filtroTipo.toLowerCase())) return false;
-            }
-
-            if (filtroRaridade) {
-                if (!item.rarityValue || item.rarityValue.toLowerCase() !== filtroRaridade.toLowerCase()) return false;
-            }
-            
+            if (filtroTipo && (!item.backendType || !item.backendType.toLowerCase().includes(filtroTipo.toLowerCase()))) return false;
+            if (filtroRaridade && (!item.rarityValue || item.rarityValue.toLowerCase() !== filtroRaridade.toLowerCase())) return false;
             if (filtrarLoja && !item.inShop) return false;
             if (filtrarNovos && !item.isNew) return false;
-
             return true;
         });
 
@@ -157,11 +173,12 @@ $(document).ready(function () {
         renderizarPagina();
     }
 
-    // --- 3. RENDERIZAÇÃO ---
+    // --- 3. RENDERIZAÇÃO (HTML) ---
     function renderizarPagina() {
         $container.empty();
+        
         if (listaVisivel.length === 0) {
-            $container.html('<div class="loading-msg">Nenhum item encontrado com esses filtros.</div>');
+            $container.html('<div class="loading-msg">Nenhum item encontrado.</div>');
             $statusPagina.text("0 / 0");
             return;
         }
@@ -178,13 +195,16 @@ $(document).ready(function () {
 
         $container.append(html);
         $statusPagina.text(`${paginaAtual} / ${totalPaginas}`);
-        $('html, body').animate({ scrollTop: $(".pesquisa-e-filtros").offset().top - 20 }, 'fast');
+        
+        if (paginaAtual > 1) {
+             $('html, body').animate({ scrollTop: $(".pesquisa-e-filtros").offset().top - 20 }, 'fast');
+        }
     }
 
     function montarCard(item) {
         const nome = item.name || "Item sem nome";
         const tipo = item.displayType || "Cosmético";
-        const rClass = item.rarityValue || "common";
+        const rClass = item.rarityValue || "common"; 
         const rText = item.rarityDisplay || "Comum";
         const imgUrl = item.image || 'https://fortnite-api.com/images/cosmetics/br/bid_001_generic/icon.png';
 
@@ -192,21 +212,31 @@ $(document).ready(function () {
         if (item.isNew) badges += '<span class="badge badge-novo">NOVO</span>';
         if (item.inShop) badges += '<span class="badge badge-venda">LOJA</span>';
 
+        // --- NOVO: Lógica do Botão ADQUIRIDO ---
         let btnClass = "btn-indisponivel";
-        let btnText = "Indisponível";
-        let priceDisplay = "N/A"; 
+        let btnText = "Ver Detalhes";
+        let priceDisplay = "Ver"; 
+        let isDisabled = "";
 
-        if (item.inShop && item.price) {
+        // 1. Verifica se o usuário JÁ TEM o item
+        const jaTem = meusItens.includes(item.id.toLowerCase());
+
+        if (jaTem) {
+            btnClass = "btn-adquirido"; // Você precisa criar esse CSS se quiser mudar a cor
+            btnText = "ADQUIRIDO";
+            priceDisplay = "OK";
+            isDisabled = "disabled"; // Opcional: desativa o clique no botão
+        } 
+        // 2. Se não tem, verifica se está na loja
+        else if (item.inShop && item.price) {
             btnClass = "btn-comprar";
             btnText = "Comprar";
             priceDisplay = item.price; 
         }
 
-        // --- AQUI ESTÁ A MÁGICA DO LINK ---
-        // Assumindo que o catalogo.php e produto.php estão na mesma pasta (paginas/)
-        // Se catalogo for na raiz, use: "paginas/produto.php?id=${item.id}"
         const linkDestino = `produto.php?id=${item.id}`;
 
+        // Ajustei o HTML do botão para aceitar o 'isDisabled' e mudei o ícone do vbuck
         return `
         <a href="${linkDestino}" class="card-link">
             <div class="card">
@@ -223,21 +253,19 @@ $(document).ready(function () {
                     <hr>
                     <div class="card-details">
                         <div class="valor">
-                            <img src="https://fortnite-api.com/images/vbuck.png" class="vbuck-icon">
+                            ${(item.inShop && !jaTem) ? '<img src="../img/icons/vbuck.png" class="vbuck-icon">' : ''}
                             <span>${priceDisplay}</span>
                         </div>
                         <span class="raridade raridade-${rClass}">${rText}</span>
                     </div>
                     
-                    <!-- O botão é apenas visual, pois o card todo é um link (<a>) -->
-                    <button class="btn ${btnClass}">${btnText}</button>
+                    <button class="btn ${btnClass}" ${isDisabled}>${btnText}</button>
                 </div>
             </div>
         </a>`;
     }
 
-    // --- 4. EVENTOS ---
-    
+    // --- 4. EVENTOS (MANTIDOS IGUAIS) ---
     $(".dropdown-btn").click(function(e) {
         e.stopPropagation(); 
         $(".dropdown-menu").not($(this).next()).removeClass("show");
@@ -265,11 +293,29 @@ $(document).ready(function () {
         aplicarFiltros();
     });
 
-    $("#pesquisa").on("keyup", function() { filtroTexto = $(this).val().toLowerCase(); aplicarFiltros(); });
-    $("#filter-shop, #filter-new").on("change", function() { aplicarFiltros(); });
+    $("#pesquisa").on("keyup", function() { 
+        filtroTexto = $(this).val().toLowerCase(); 
+        aplicarFiltros(); 
+    });
 
-    $("#prev").click(function() { if (paginaAtual > 1) { paginaAtual--; renderizarPagina(); } });
-    $("#next").click(function() { const total = Math.ceil(listaVisivel.length / itensPorPagina); if (paginaAtual < total) { paginaAtual++; renderizarPagina(); } });
+    $("#filter-shop, #filter-new").on("change", function() { 
+        aplicarFiltros(); 
+    });
+
+    $("#prev").click(function() { 
+        if (paginaAtual > 1) { 
+            paginaAtual--; 
+            renderizarPagina(); 
+        } 
+    });
+    $("#next").click(function() { 
+        const total = Math.ceil(listaVisivel.length / itensPorPagina); 
+        if (paginaAtual < total) { 
+            paginaAtual++; 
+            renderizarPagina(); 
+        } 
+    });
     
+    // Inicia tudo
     carregarDados();
 });

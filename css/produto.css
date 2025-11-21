@@ -191,10 +191,13 @@ body {
 }
 
 .btn-azul {
-    background-color: #1da1f2; /* Azul Fortnite */
-    color: white;
+    background-color: #1da1f2; /* Azul padrão */
+    color: white; /* Texto branco para dar contraste */
 }
-.btn-azul:hover { background-color: #0c85d0; }
+
+.btn-azul:hover { 
+    background-color: #0c85d0; /* Azul mais escuro ao passar o mouse */
+}
 
 .btn-vermelho {
     background-color: white;

@@ -1,77 +1,112 @@
-# README - Processo Seletivo ESO
+# Processo Seletivo ESO - Loja Simples
 
-Projeto enviado para o processo seletivo da vaga de estágio. Sem rodeio: entreguei o que deu dentro da minha semana de provas. Aqui explico o que tem e o que não tem no projeto.
+Este é um projeto desenvolvido para o processo seletivo da vaga de estágio na ESO. Trata-se de uma loja virtual simples implementada com funcionalidades básicas de e-commerce.
 
-## O que foi feito
+## Funcionalidades Implementadas
 
-* Estrutura base do projeto.
-* Começo das funcionalidades pedidas.
-* Organização mínima pra não virar bagunça.
-* paginação
-* barra de pesquisa
-* cadastro
-* banco de dados
+- **Estrutura Base**: Organização do projeto com separação de front-end e back-end.
+- **Página Inicial**: Interface principal da loja.
+- **Catálogo de Produtos**: Listagem de produtos com paginação.
+- **Barra de Pesquisa**: Funcionalidade para buscar produtos.
+- **Sistema de Cadastro**: Registro de novos usuários.
+- **Sistema de Login**: Autenticação de usuários (básico).
+- **Banco de Dados**: Configuração e integração com MySQL para armazenar usuários e produtos.
 
-## O que não foi feito
+## Funcionalidades Não Implementadas
 
-* Partes que não consegui finalizar dentro do prazo. (Salvar compras do usuario, login funcional com sessão ativa, filtro de tipo, salvar no docker (aparentemente meu dispositivo não é compativel), pagina com produto especifico e sua descricao)
-* somente o catalogo login e cadastro tem funcionalidades interativas.
+Devido a limitações de tempo (semana de provas), as seguintes funcionalidades não foram concluídas:
+- Salvamento de compras do usuário.
+- Login funcional com sessão ativa.
+- Filtro por tipo de produto.
+- Containerização com Docker (incompatibilidade com o dispositivo).
+- Página detalhada de produto com descrição específica.
+- Apenas o catálogo, login e cadastro possuem interatividade completa.
 
+## Tecnologias Utilizadas
 
-## Como acessar
+- **Front-end**: HTML, CSS, JavaScript
+- **Back-end**: PHP
+- **Banco de Dados**: MySQL
 
-1. Clone o repositório:
+## Instalação e Execução
 
-```
-git clone https://github.com/NathanaelFenichi/processo-seletivo-eso.git
-```
+### Pré-requisitos
+- Servidor local como XAMPP, WAMP ou similar com suporte a PHP e MySQL.
 
-2. Entre na pasta do projeto:
+### Passos
 
-```
-cd processo-seletivo-eso
-```
+1. **Clone o repositório**:
+   ```bash
+   git clone https://github.com/NathanaelFenichi/processo-seletivo-eso.git
+   ```
 
-3. Execute em ambiente local (XAMPP/WAMP/PHP) conforme seu setup.
-  importe o mydb (1).sql como banco de dados
-  ja vai estar como localhost a configuração então é so entrar por
-  [phpmyA](http://localhost/processo-seletivo-eso/index.php)]
-  e ja estará rodando na sua maquina,
-  lembre se de adicionar o arquivo dentro de C:\xampp\htdocs para funcionar
+2. **Navegue até a pasta do projeto**:
+   ```bash
+   cd processo-seletivo-eso
+   ```
+
+3. **Configure o ambiente local**:
+   - Adicione a pasta do projeto em `C:\xampp\htdocs` (ou equivalente no seu servidor).
+   - Importe o arquivo `mydb (1).sql` para o seu banco de dados MySQL (via phpMyAdmin ou similar).
+
+4. **Execute o projeto**:
+   - Inicie o servidor Apache e MySQL no XAMPP.
+   - Acesse via navegador: [http://localhost/processo-seletivo-eso/index.php](http://localhost/processo-seletivo-eso/index.php)
 
 ## Estrutura do Projeto
 
 ```
 processo-seletivo-eso/
 │
-├── public/              # Arquivos acessíveis diretamente (index, assets, css, js)
-│   ├── css/
-│   ├── js/
-│   └── img/
+├── index.php                 # Página inicial
+├── loja_simples.html         # Versão HTML da loja
+├── produto.html              # Página de produto
+├── mydb (1).sql              # Dump do banco de dados
 │
-├── src/                 # Código fonte principal
-│   ├── config/          # Configurações (ex: conexão com banco)
-│   ├── controllers/     # Lógica das rotas / regras do sistema
-│   ├── models/          # Operações com banco de dados
-│   └── views/           # Páginas que o usuário vê (HTML/PHP)
+├── backend/                  # Scripts PHP do back-end
+│   ├── comprar.php
+│   ├── conecta.php
+│   ├── devolver.php
+│   ├── logout.php
+│   ├── obtidos.php
+│   ├── validaCadastro.php
+│   ├── validaLogin.php
+│   ├── verifica_Posse.php
+│   └── js/                   # Scripts JavaScript do back-end
+│       ├── catalogo.js
+│       ├── home.js
+│       ├── produto.js
+│       └── testes.js
 │
-├── database/            # SQL, scripts de criação de tabelas, dumps
+├── css/                      # Folhas de estilo
+│   ├── cadastro-login.css
+│   ├── geral.css
+│   ├── index.css
+│   ├── perfil.css
+│   ├── produto.css
+│   └── shop.css
 │
-├── README.md
-└── .gitignore
+├── img/                      # Imagens e ícones
+│   ├── fortinite-banner.jpeg
+│   ├── photo.png
+│   └── icons/
+│
+└── paginas/                  # Páginas PHP
+    ├── cadastro.php
+    ├── catalogo.php
+    ├── login.php
+    ├── nav.php
+    ├── perfil.php
+    ├── perfilPub.php
+    ├── produto.php
+    └── usuarios.php
 ```
 
-## Tecnologias usadas
+## Nota Pessoal
 
-* HTML / CSS / JS
-* PHP básico
-* MySQL básico
+Este projeto foi desenvolvido em um período de alta demanda devido a provas acadêmicas, o que resultou em algumas funcionalidades incompletas. Mesmo assim, serviu como uma oportunidade valiosa para revisar conceitos aprendidos no curso técnico em TI. Agradeço pela oportunidade de participar do processo seletivo.
 
-## Nota pessoal
-
-Gostaria de deixar claro que tive maior dificuldade com o projeto devido a correria e estar aprendendo alguns recursos que não sabia usar, este projeto mesmo que incompleto me fez relembrar de muita coisa do meu curso de tecnico em Ti, 
-agradeço novamente a oportunidade
 ## Contato
 
-Email: **[nathanael.essantos@gmail.com](mailto:nathanael.essantos@gmail.com)**
-WhatsApp: (19) 99308-4117
+- **Email**: [nathanael.essantos@gmail.com](mailto:nathanael.essantos@gmail.com)
+- **WhatsApp**: (19) 99308-4117

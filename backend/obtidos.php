@@ -1,25 +1,40 @@
 <?php
 session_start();
-// Conecta ao banco
-if (file_exists('../conecta.php')) require '../conecta.php';
-else require 'conecta.php';
-
 header('Content-Type: application/json');
 
+// Verifica se está logado
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['tem_item' => false]);
+    echo json_encode(['sucesso' => false, 'ids' => []]);
+    exit;
+}
+
+// Conexão com Banco
+if (file_exists('../conecta.php')) {
+    require '../conecta.php';
+} elseif (file_exists('conecta.php')) {
+    require 'conecta.php';
+} else {
+    echo json_encode(['sucesso' => false, 'ids' => []]);
     exit;
 }
 
 $userId = $_SESSION['user_id'];
-$input = json_decode(file_get_contents('php://input'), true);
-$itemId = $input['id'] ?? '';
 
-// Verifica na tabela 'compras' se existe registro desse usuário com esse item
-$stmt = $conn->prepare("SELECT id FROM compras WHERE user_id = ? AND cosmetic_id = ?");
-$stmt->bind_param("is", $userId, $itemId);
+// --- IMPORTANTE: Buscamos TODOS os itens, sem filtro de ID específico ---
+$sql = "SELECT cosmetic_id FROM compras WHERE user_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
 
-echo json_encode(['tem_item' => $result->num_rows > 0]);
+$ids = [];
+while ($row = $result->fetch_assoc()) {
+    $ids[] = strtolower($row['cosmetic_id']); // Salva tudo num array
+}
+
+// Retorna a lista completa (ex: ids: ['cid_123', 'cid_456'])
+echo json_encode(['sucesso' => true, 'ids' => $ids]);
+
+$stmt->close();
+$conn->close();
 ?>

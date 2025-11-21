@@ -1,47 +1,75 @@
 <?php
-// Só inicia a sessão se ela ainda não estiver ativa
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Lógica para saber se estamos na raiz ou na pasta 'paginas/'
-$isInPages = strpos($_SERVER['REQUEST_URI'], '/paginas/') !== false;
+$paginaAtual = basename($_SERVER['PHP_SELF']);
 
-// Define os caminhos relativos corretos
-$pathHome = $isInPages ? "../index.php" : "index.php";
-$pathLoja = $isInPages ? "catalogo.php" : "paginas/catalogo.php";
-$pathPerfil = $isInPages ? "perfil.php" : "paginas/perfil.php";
-$pathLogin = $isInPages ? "login.php" : "paginas/login.php";
-$pathLogout = $isInPages ? "../backend/logout.php" : "backend/logout.php";
+// --- 1. DEFINIÇÃO DE CAMINHOS ---
+if ($paginaAtual == 'index.php') {
+    // Na Raiz (Home)
+    $pathHome   = "index.php";
+    $pathLoja   = "paginas/catalogo.php";
+    $pathPerfil = "paginas/perfil.php";
+    $pathLogin  = "paginas/login.php";
+    $pathLogout = "backend/logout.php";
+    $imgVbuck   = "img/icons/vbuck.png";
+} else {
+    // Dentro da pasta 'paginas'
+    $pathHome   = "../index.php";
+    $pathLoja   = "catalogo.php";
+    $pathPerfil = "perfil.php";
+    $pathLogin  = "login.php";
+    $pathLogout = "../backend/logout.php";
+    $imgVbuck   = "../img/icons/vbuck.png";
+}
 
-// Caminho da imagem do V-Bucks
-$imgVbuck = $isInPages ? "../img/icons/vbuck.png" : "img/icons/vbuck.png";
+// --- 2. LÓGICA DO LINK "PERFIL" ---
+// Se logado -> vai pro Perfil. Se deslogado -> vai pro Login.
+if (isset($_SESSION['user_id'])) {
+    $linkDoPerfil = $pathPerfil;
+} else {
+    $linkDoPerfil = $pathLogin;
+}
+
+// --- 3. LÓGICA DO BOTÃO (Voltar / Sair / Entrar) ---
+$btnTexto = "Entrar";
+$btnLink  = $pathLogin;
+
+if ($paginaAtual == 'login.php' || $paginaAtual == 'cadastro.php') {
+    $btnTexto = "Voltar";
+    $btnLink  = $pathHome;
+} elseif (isset($_SESSION['user_id'])) {
+    $btnTexto = "Sair";
+    $btnLink  = $pathLogout;
+}
 ?>
 
 <nav>
-  <div class="qtd-V-bucks">
-    <img src="<?php echo $imgVbuck; ?>" alt="V-bucks">
-    <?php 
-    if(isset($_SESSION['vbucks'])) {
-        echo "<h2>" . number_format($_SESSION['vbucks'], 0, ',', '.') . "</h2>";
-    } else {
-        echo "<h2>0</h2>";
-    }
-    ?>
-  </div>
+    <div class="qtd-V-bucks">
+        <img src="<?php echo $imgVbuck; ?>" alt="V-bucks">
+        <h2>
+            <?php 
+            // Verifica se está logado E se tem vbucks na sessão
+            if (isset($_SESSION['user_id']) && isset($_SESSION['vbucks'])) {
+                echo number_format($_SESSION['vbucks'], 0, ',', '.');
+            } else {
+                // Se não estiver logado, mostra 0
+                echo "0";
+            }
+            ?>
+        </h2>
+    </div>
 
-  <ul class="nav-paginas">
-    <li><a href="<?php echo $pathHome; ?>">Home</a></li>
-    <li><a href="<?php echo $pathLoja; ?>">Loja</a></li>
-    <li><a href="<?php echo $pathPerfil; ?>">Perfil</a></li>
-  </ul>
+    <ul class="nav-paginas">
+        <li><a href="<?php echo $pathHome; ?>">Home</a></li>
+        <li><a href="<?php echo $pathLoja; ?>">Loja</a></li>
+        <li><a href="<?php echo $linkDoPerfil; ?>">Perfil</a></li>
+    </ul>
 
-  <!-- Botão Dinâmico com a estrutura HTML original para manter o CSS -->
-  <?php if(isset($_SESSION['user_id'])): ?>
-      <!-- Logado: Botão Sair -->
-      <button><a href="<?php echo $pathLogout; ?>">Sair</a></button>
-  <?php else: ?>
-      <!-- Deslogado: Botão Entrar -->
-      <button><a href="<?php echo $pathLogin; ?>">Entrar</a></button>
-  <?php endif; ?>
+    <button>
+        <a href="<?php echo $btnLink; ?>">
+            <?php echo $btnTexto; ?>
+        </a>
+    </button>
 </nav>

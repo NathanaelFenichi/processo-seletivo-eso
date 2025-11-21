@@ -20,7 +20,7 @@
   <main class="container">
     <section class="pesquisa-e-filtros">
       <div class="barra-Pesquisa">
-        <label for="pesquisa">🔍</label>
+        <label for="pesquisa"><img src="../img/icons/pesquisa.png" alt=""></label>
         <input type="search" id="pesquisa" placeholder="Pesquise por skins, picaretas..." />
 
         <!-- Dropdown TIPO -->
