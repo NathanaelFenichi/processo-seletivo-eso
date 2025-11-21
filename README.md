@@ -1,103 +1,138 @@
-# Processo Seletivo ESO - Loja Simples
+# Loja Simples — Processo Seletivo ESO
 
-Este é um projeto desenvolvido para o processo seletivo da vaga de estágio na ESO. Trata-se de uma loja virtual simples implementada com funcionalidades básicas de e-commerce.
+Projeto feito para o processo seletivo da ESO.  
+A ideia aqui é mostrar o básico de um e-commerce: cadastro, login, catálogo, compra, devolução e visualização de usuários.
 
-## Funcionalidades Implementadas
+Nada de firula — foco no funcionamento.
 
-- **Estrutura Base**: Organização do projeto com separação de front-end e back-end.
-- **Página Inicial**: Interface principal da loja.
-- **Catálogo de Produtos**: Listagem de produtos com paginação.
-- **Barra de Pesquisa**: Funcionalidade para buscar produtos.
-- **Sistema de Cadastro**: Registro de novos usuários.
-- **Sistema de Login**: Autenticação de usuários (básico).
-- **Banco de Dados**: Configuração e integração com MySQL para armazenar usuários e produtos.
+---
 
-## Funcionalidades Não Implementadas
+## 🔧 O que funciona
 
-- Containerização com Docker (incompatibilidade com o dispositivo).
+### 🛒 Loja
+- Catálogo com paginação.
+- Página de produto.
+- Busca por nome.
+- Perfil público e privado.
 
-## Tecnologias Utilizadas
+### 👤 Usuário
+- Cadastro e login.
+- Compra de item.
+- Devolução de item.
+- Lista de itens adquiridos.
 
-- **Front-end**: HTML, CSS, JavaScript
-- **Back-end**: PHP
-- **Banco de Dados**: MySQL
+### 🗄️ Banco
+- MySQL funcionando com todas as tabelas necessárias.
+- Dump incluso no projeto.
 
-## Instalação e Execução
+### 🌐 Front e Back
+- HTML, CSS e JavaScript simples no front.
+- PHP no back-end com as regras de compra, devolução, login, etc.
 
-### Pré-requisitos
-- Servidor local como XAMPP, WAMP ou similar com suporte a PHP e MySQL.
+---
 
-### Passos
+## 🚫 O que ainda não tem
+- Docker (não rolou no dispositivo onde desenvolvi).
+- Testes automatizados.
+- Hash de senha / prepared statements (a parte de segurança ainda precisa ser reforçada).
+- Fluxo mais robusto de validação.
 
-1. **Clone o repositório**:
-   ```bash
-   git clone https://github.com/NathanaelFenichi/processo-seletivo-eso.git
-   ```
+---
 
-2. **Navegue até a pasta do projeto**:
-   ```bash
-   cd processo-seletivo-eso
-   ```
+## 📁 Estrutura do Projeto
 
-3. **Configure o ambiente local**:
-   - Adicione a pasta do projeto em `C:\xampp\htdocs` (ou equivalente no seu servidor).
-   - Importe o arquivo `mydb (1).sql` para o seu banco de dados MySQL (via phpMyAdmin ou similar).
-
-4. **Execute o projeto**:
-   - Inicie o servidor Apache e MySQL no XAMPP.
-   - Acesse via navegador: [http://localhost/processo-seletivo-eso/index.php](http://localhost/processo-seletivo-eso/index.php)
-
-## Estrutura do Projeto
-
-```
 processo-seletivo-eso/
 │
-├── index.php                 # Página inicial
-├── mydb (1).sql              # Dump do banco de dados
+├── index.php
+├── mydb (1).sql
 │
-├── backend/                  # Scripts PHP 
-│   ├── comprar.php
-│   ├── conecta.php
-│   ├── devolver.php
-│   ├── logout.php
-│   ├── obtidos.php
-│   ├── validaCadastro.php
-│   ├── validaLogin.php
-│   ├── verifica_Posse.php
-│   └── js/                   # Scripts JavaScript
-│       ├── catalogo.js
-│       ├── home.js
-│       ├── produto.js
-│     
+├── backend/
+│ ├── conecta.php
+│ ├── validaCadastro.php
+│ ├── validaLogin.php
+│ ├── comprar.php
+│ ├── devolver.php
+│ ├── obtidos.php
+│ ├── verifica_Posse.php
+│ └── js/
+│ ├── catalogo.js
+│ ├── home.js
+│ └── produto.js
 │
-├── css/                     
-│   ├── cadastro-login.css
-│   ├── geral.css
-│   ├── index.css
-│   ├── perfil.css
-│   ├── produto.css
-│   └── shop.css
+├── paginas/
+│ ├── cadastro.php
+│ ├── catalogo.php
+│ ├── login.php
+│ ├── perfil.php
+│ ├── perfilPub.php
+│ ├── produto.php
+│ └── usuarios.php
 │
-├── img/                      # Imagens e ícones
-│   ├── fortinite-banner.jpeg
-│   └── icons/
-│
-└── paginas/                  # Páginas PHP
-    ├── cadastro.php
-    ├── catalogo.php
-    ├── login.php
-    ├── nav.php
-    ├── perfil.php
-    ├── perfilPub.php
-    ├── produto.php
-    └── usuarios.php
-```
+├── css/
+└── img/
 
-## Nota Pessoal
+yaml
+Copiar código
 
-Esse projeto foi feito em um período de bastante demanda por causa das provas da faculdade, mas acabou sendo uma boa oportunidade para revisitar conteúdos do curso técnico em TI e colocar em prática o que eu já sabia. Ainda tenho pontos do código que preciso rever, porque fiquei um tempo sem contato com esses temas e estou retomando agora, mas vejo isso como parte do processo de aprendizado.Desde ja agradeço pela chance de participar do processo seletivo.
+---
 
-## Contato
+## Como rodar localmente
 
-- **Email**: [nathanael.essantos@gmail.com](mailto:nathanael.essantos@gmail.com)
-- **WhatsApp**: (19) 99308-4117
+### Requisitos
+- XAMPP, WAMP ou equivalente
+- PHP 8+
+- MySQL 5.7+ ou MariaDB
+
+### Passo a passo
+
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/NathanaelFenichi/processo-seletivo-eso.git
+Coloque a pasta dentro do htdocs do XAMPP:
+
+makefile
+Copiar código
+C:\xampp\htdocs\processo-seletivo-eso
+Importe o banco:
+
+Abra o phpMyAdmin
+
+Crie um banco
+
+Importe mydb (1).sql
+
+Ajuste o arquivo:
+
+bash
+Copiar código
+backend/conecta.php
+com as credenciais do seu MySQL.
+
+Abra no navegador:
+
+arduino
+Copiar código
+http://localhost/processo-seletivo-eso/index.php
+🧩 Observações diretas sobre o código
+O fluxo de compra e devolução funciona, mas ainda não usa transações nem prepared statements.
+
+Senhas precisam ser hashadas (password_hash / password_verify).
+
+O JS do catálogo funciona, mas ainda pode ser desacoplado e melhor estruturado.
+
+As páginas estão funcionais e simples, o suficiente pra entender o fluxo.
+
+A organização geral tá limpa o bastante pro avaliador navegar sem sofrer.
+
+📌 Melhorias planejadas (curto prazo)
+Hash de senha + refatoração de SQL com PDO.
+
+Documentação dos endpoints e parâmetros.
+
+Dockerfile + docker-compose.
+
+Testes básicos de login, compra e devolução.
+
+📞 Contato
+Email: nathanael.essantos@gmail.com
+WhatsApp: (19) 99308-4117
