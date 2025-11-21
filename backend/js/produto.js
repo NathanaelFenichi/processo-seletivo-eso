@@ -1,170 +1,150 @@
 $(document).ready(function () {
 
-    // 1. Pegar ID da URL
     const params = new URLSearchParams(window.location.search);
-    // Decodifica caso venha com caracteres especiais (acento em Pacotão)
     const itemId = decodeURIComponent(params.get('id'));
-    
-    let itemCarregado = false;
 
-    if (!itemId) {
-        $("#nome").text("Item não especificado.");
-        return;
-    }
+    if (!itemId) { $("#nome").text("Item não especificado."); return; }
 
-    // --- FUNÇÃO PARA ATUALIZAR A TELA ---
-    function renderizarItem(dados) {
-        // Se já carregamos da loja (fonte mais rica para preços), não sobrescreve com dados básicos
-        if (itemCarregado && dados.fonte === "loja" && $("#nome").text() !== "Buscando na loja...") return;
-        
-        itemCarregado = true;
+    const urlItem = `https://fortnite-api.com/v2/cosmetics/br/${itemId}?language=pt-BR`;
+    const urlShop = 'https://fortnite-api.com/v2/shop?language=pt-BR';
 
-        const nome = dados.name || dados.title || "Nome Desconhecido";
-        const descricao = dados.description || "Sem descrição disponível.";
-        const tipo = dados.type ? dados.type.displayValue : "Cosmético";
-        
-        let raridadeNome = "Comum";
-        let raridadeClasse = "common";
-        if (dados.rarity) {
-            raridadeNome = dados.rarity.displayValue;
-            raridadeClasse = dados.rarity.value ? dados.rarity.value.toLowerCase() : "common";
-        }
+    let precoItem = 0;
+    let jaPossui = false; // Estado local
 
-        // Imagem (Cascata de tentativas)
-        const imagem = dados.images?.featured || 
-                       dados.images?.icon || 
-                       dados.images?.smallIcon || 
-                       dados.albumArt || 
-                       dados.cover || 
-                       '../img/sem-imagem.png';
-
-        // Aplica no HTML
-        $("#nome").text(nome);
-        $("#descricao").text(descricao);
-        $("#tipo").text(tipo);
-        
-        const $badgeRaridade = $("#raridade");
-        $badgeRaridade.text(raridadeNome);
-        $badgeRaridade.removeClass().addClass(`badge-raridade rarity-${raridadeClasse}`);
-        $badgeRaridade.show();
-
-        $("#imagem").attr("src", imagem);
-        document.title = `${nome} - Detalhes`;
-    }
-
-    // --- 2. TENTATIVA 1: BUSCA NORMAL (Apenas se NÃO for ID de Bundle artificial) ---
-    if (!itemId.startsWith('bundle_')) {
-        $.getJSON(`https://fortnite-api.com/v2/cosmetics/br/${itemId}?language=pt-BR`, function(response) {
-            if (response.data) {
-                renderizarItem({...response.data, fonte: "br"});
+    // --- 1. VERIFICA SE JÁ TEM O ITEM (Chama PHP) ---
+    $.ajax({
+        url: '../backend/verificar_posse.php',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ id: itemId }),
+        success: function(res) {
+            if (res.tem_item) {
+                jaPossui = true;
+                atualizarBotao(); // Já muda o botão para verde
             }
-        }).fail(function() {
-             // Fallbacks (Carros, Músicas...)
-             // ... (mantive simplificado aqui, a lógica completa está na versão anterior se precisar)
-             // Se tudo falhar, o passo 3 resolve.
-             if (!itemCarregado) $("#nome").text("Buscando na loja...");
-        });
-    } else {
-        // Se for bundle, já pula direto pra mensagem de busca
-        $("#nome").text("Buscando Pacote na Loja...");
-    }
+        }
+    });
 
-    // --- 3. VERIFICAÇÃO DE PREÇO E DISPONIBILIDADE (LOJA) ---
-    $.getJSON('https://fortnite-api.com/v2/shop?language=pt-BR', function (shop) {
+    // --- 2. CARREGA DADOS VISUAIS ---
+    $.getJSON(urlItem, function (res) {
+        if (res.data) renderizarTela(res.data);
+    }).fail(function() {
+        console.log("Buscando detalhes na loja...");
+    });
+
+    // --- 3. VERIFICA PREÇO NA LOJA ---
+    $.getJSON(urlShop, function (shop) {
         let estaNaLoja = false;
-        let precoEncontrado = 0;
-        let dadosDaLoja = null;
 
         if (shop.data && shop.data.entries) {
             shop.data.entries.forEach(entry => {
+                let itens = [].concat(entry.items || [], entry.tracks || [], entry.cars || []);
+                const achou = itens.find(i => i.id.toLowerCase() === itemId.toLowerCase());
                 
-                // A. Lógica para Itens Normais (Pelo ID)
-                let achouItemNormal = false;
-                if (!itemId.startsWith('bundle_')) {
-                    let itensDaOferta = [];
-                    if (entry.items) itensDaOferta = itensDaOferta.concat(entry.items);
-                    if (entry.tracks) itensDaOferta = itensDaOferta.concat(entry.tracks);
-                    if (entry.cars) itensDaOferta = itensDaOferta.concat(entry.cars);
-                    if (entry.instruments) itensDaOferta = itensDaOferta.concat(entry.instruments);
-
-                    const itemReal = itensDaOferta.find(i => i.id.toLowerCase() === itemId.toLowerCase());
-                    if (itemReal) {
-                        achouItemNormal = true;
-                        dadosDaLoja = itemReal;
-                    }
-                }
-
-                // B. Lógica para Bundles Artificiais (Pelo Nome gerado)
-                let achouBundle = false;
+                // Verifica Bundle/Pacote
+                let isBundle = false;
                 if (entry.bundle && entry.bundle.name) {
-                    // Recria o ID artificial para comparar
-                    const idGerado = `bundle_${entry.bundle.name.replace(/\s+/g, '')}`;
-                    // Decodifica ambos para garantir que acentos batam (Pacotão vs Pacot%C3%A3o)
-                    if (decodeURIComponent(idGerado) === decodeURIComponent(itemId)) {
-                        achouBundle = true;
-                        // Cria um objeto de dados "fake" baseado no bundle para preencher a tela
-                        dadosDaLoja = {
-                            id: itemId,
-                            name: entry.bundle.name,
-                            description: entry.bundle.info || "Pacote disponível na Loja de Itens.",
-                            type: { displayValue: "Pacote" },
-                            rarity: { value: "legendary", displayValue: "Loja" },
-                            images: { featured: entry.bundle.image, icon: entry.bundle.image }
-                        };
-                    }
+                    const bundleId = `bundle_${entry.bundle.name.replace(/\s+/g, '')}`;
+                    if (decodeURIComponent(bundleId) === itemId) isBundle = true;
                 }
 
-                // Se achou de qualquer jeito
-                if (achouItemNormal || achouBundle) {
+                if (achou || isBundle) {
                     estaNaLoja = true;
-                    precoEncontrado = entry.finalPrice;
+                    precoItem = entry.finalPrice;
                     
-                    // Se achou imagem melhor na oferta (fundo customizado)
-                    if (entry.newDisplayAsset?.materialInstances?.[0]?.images?.Background) {
-                        dadosDaLoja.shopImage = entry.newDisplayAsset.materialInstances[0].images.Background;
+                    // Se API principal falhou, usa dados da loja
+                    if ($("#nome").text().includes("Carregando")) {
+                        const dadosLoja = achou || {
+                            name: entry.bundle.name,
+                            description: "Pacote da Loja",
+                            type: { displayValue: 'Pacote' },
+                            images: { featured: entry.bundle.image }
+                        };
+                        renderizarTela(dadosLoja);
                     }
                 }
             });
         }
 
-        // ATUALIZAÇÃO DE PREÇO (Botão)
-        const $precoBox = $("#preco");
-        const $btnComprar = $(".btn-comprar");
-
+        const $preco = $("#preco");
         if (estaNaLoja) {
-            $precoBox.html(`${precoEncontrado} <img src="https://fortnite-api.com/images/vbuck.png" style="width:24px; vertical-align:bottom;">`);
-            $precoBox.css("color", "#33CC99");
-            $btnComprar.fadeIn().css("display", "flex");
-            
-            // Se a API principal não achou (ou era bundle), usamos os dados da loja
-            if (dadosDaLoja) {
-                // Prioriza imagem da loja
-                if (dadosDaLoja.shopImage) dadosDaLoja.images = { featured: dadosDaLoja.shopImage };
-                
-                renderizarItem({...dadosDaLoja, fonte: "loja"});
-            }
+            $preco.html(`${precoItem} <img src="../img/icons/vbuck.png" width="24" style="vertical-align:bottom">`);
+            $preco.css("color", "#33CC99");
+            atualizarBotao(); // Garante estado correto
         } else {
-            $precoBox.text("Indisponível");
-            $precoBox.css("color", "#aaa");
-            $btnComprar.hide();
-            
-            if (!itemCarregado) {
-                $("#nome").text("Item não encontrado.");
-                $("#descricao").text("Este item saiu da loja ou o link está incorreto.");
-                $("#imagem").hide();
-            }
+            $preco.text("Indisponível");
+            $preco.css("color", "#aaa");
+            if (!jaPossui) $(".btn-comprar").hide();
         }
-
-    }).fail(function() {
-        $("#preco").text("Erro Loja");
     });
 
-    // 4. Botão Voltar
-    $(".btn-voltar").click(function() {
-        if (document.referrer) {
-            window.history.back();
-        } else {
-            window.location.href = '../index.php';
+    function renderizarTela(item) {
+        $("#nome").text(item.name || item.title || "Item");
+        $("#descricao").text(item.description || "Sem descrição.");
+        $("#tipo").text(item.type ? item.type.displayValue : "Cosmético");
+        
+        const img = item.images?.featured || item.images?.icon || item.albumArt || '../img/sem-imagem.png';
+        $("#imagem").attr("src", img);
+
+        if (item.rarity) {
+            $("#raridade").text(item.rarity.displayValue)
+                .addClass(`rarity-${item.rarity.value ? item.rarity.value.toLowerCase() : 'common'}`);
         }
+        document.title = `${item.name} - Detalhes`;
+    }
+
+    function atualizarBotao() {
+        const $btn = $(".btn-comprar");
+        if (jaPossui) {
+            $btn.text("ADQUIRIDO ✓")
+                .css("background-color", "#27ae60")
+                .prop("disabled", true)
+                .show();
+        } else {
+            $btn.text("Adicionar ao Carrinho")
+                .css("background-color", "#1da1f2")
+                .prop("disabled", false)
+                .show();
+        }
+    }
+
+    // --- 4. AÇÃO DE COMPRAR ---
+    $(".btn-comprar").click(function() {
+        if (jaPossui) return;
+
+        if (!confirm(`Comprar por ${precoItem} V-Bucks?`)) return;
+
+        const $btn = $(this);
+        $btn.text("Processando...");
+
+        $.ajax({
+            url: '../backend/comprar.php',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id: itemId,
+                preco: precoItem
+            }),
+            success: function(res) {
+                if (res.sucesso) {
+                    alert("🎉 " + res.msg);
+                    jaPossui = true;
+                    atualizarBotao();
+                    // Atualiza saldo visualmente
+                    if(res.novo_saldo !== undefined) $(".qtd-V-bucks h2").text(res.novo_saldo);
+                } else {
+                    alert("❌ " + res.msg);
+                    atualizarBotao(); // Reseta texto
+                }
+            },
+            error: function() {
+                alert("Erro de conexão.");
+                atualizarBotao();
+            }
+        });
+    });
+
+    $(".btn-voltar").click(function() {
+        window.history.back();
     });
 });

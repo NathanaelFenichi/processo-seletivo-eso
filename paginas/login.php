@@ -18,8 +18,8 @@
     </div>
     <ul class="nav-paginas">
       <li><a href="../index.php">Home</a></li>
-      <li><a href="paginas.html">Loja</a></li>
-      <li><a href="perfil.html">Perfil</a></li>
+      <li><a href="catalogo.php">Loja</a></li>
+      <li><a href="perfil.php">Perfil</a></li>
     </ul>
     <button><a href="../index.php">voltar</a></button>
   </nav>
