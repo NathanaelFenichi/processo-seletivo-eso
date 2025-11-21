@@ -14,7 +14,6 @@
   <script src="../backend/js/catalogo.js"></script>
 </head>
 <body>
-<!-- Importa a Nav- bar -->
   <?php include 'nav.php'; ?>
 
   <main class="container">
@@ -23,7 +22,6 @@
         <label for="pesquisa"><img src="../img/icons/pesquisa.png" alt=""></label>
         <input type="search" id="pesquisa" placeholder="Pesquise por skins, picaretas..." />
 
-        <!-- Dropdown TIPO -->
         <div class="dropdown" id="dropdown-tipo">
           <button class="dropdown-btn">Tipo</button>
           <div class="dropdown-menu">
@@ -38,7 +36,6 @@
           </div>
         </div>
 
-        <!-- Dropdown RARIDADE -->
         <div class="dropdown" id="dropdown-raridade">
           <button class="dropdown-btn">Raridade</button>
           <div class="dropdown-menu">
@@ -55,7 +52,6 @@
       </div>
 
       <div class="filtros-extra">
-        <!-- Checkboxes -->
         <label class="checkbox-pill">
             <input type="checkbox" id="filter-shop">
             Na Loja
@@ -76,7 +72,6 @@
     </div>
   </main>
 
-  <!-- Importando Script Externo -->
   <script src="catalogo.js"></script>
 
 </body>

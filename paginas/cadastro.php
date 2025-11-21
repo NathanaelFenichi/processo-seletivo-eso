@@ -9,15 +9,13 @@
 </head>
 <body>
 
-  <!-- Correção 1: Caminho da Navbar (sobe um nível com ../) -->
   <?php include 'nav.php'; ?>
 
   <main class="container">
     <div class="form-card">
       <h1>CADASTRE-SE</h1>
 
-      <?php 
-      // Adicionado: Exibe erro se houver (ex: senhas não batem)
+      <?php
       if (isset($_SESSION['cadastro_erro'])) {
           echo "<p style='color: #ff4444; font-weight: bold; text-align: center; margin: 10px 0;'>" . $_SESSION['cadastro_erro'] . "</p>";
           unset($_SESSION['cadastro_erro']);
@@ -26,10 +24,6 @@
 
       <p class="subtitle">Insira seus dados para acessar nosso sistema.</p>
 
-      <!-- 
-         Correção 2: O action deve sair da pasta 'paginas' (../) 
-         e ir para 'backend/validaCadastro.php' 
-      -->
       <form method="post" action="../backend/validaCadastro.php">
         
         <label>Nome</label>

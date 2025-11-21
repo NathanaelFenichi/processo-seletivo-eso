@@ -140,31 +140,7 @@ body {
     font-size: 1rem;
 }
 
-/* Rodapé (Preço e Botões) */
-.rodape-acao {
-    border-top: 1px solid #eee;
-    padding-top: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
-.preco-box .label {
-    display: block;
-    font-size: 0.9rem;
-    color: #999;
-    margin-bottom: 5px;
-}
-
-.valor-final {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #33CC99; /* Verde Destaque */
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
 
 .botoes-wrapper {
     display: flex;
@@ -191,12 +167,12 @@ body {
 }
 
 .btn-azul {
-    background-color: #1da1f2; /* Azul padrão */
-    color: white; /* Texto branco para dar contraste */
+    background-color: #1da1f2; 
+    color: white; 
 }
 
 .btn-azul:hover { 
-    background-color: #0c85d0; /* Azul mais escuro ao passar o mouse */
+    background-color: #0c85d0;
 }
 
 .btn-vermelho {
@@ -208,35 +184,3 @@ body {
     background-color: #fff5f5;
 }
 
-/* --- RESPONSIVIDADE (Celular) --- */
-@media (max-width: 900px) {
-    .card-produto-especial {
-        flex-direction: column;
-    }
-
-    .box-imagem {
-        padding: 20px;
-        min-height: 300px;
-    }
-    
-    .box-imagem img {
-        max-height: 300px;
-    }
-
-    .box-info {
-        padding: 30px 20px;
-    }
-    
-    .rodape-acao {
-        flex-direction: column;
-        gap: 20px;
-        align-items: stretch;
-        text-align: center;
-    }
-    
-    .preco-box { margin-bottom: 10px; }
-    
-    .botoes-wrapper {
-        flex-direction: column;
-    }
-}

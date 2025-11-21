@@ -2,13 +2,13 @@
 session_start();
 header('Content-Type: application/json');
 
-// 1. Verifica Login
+//  Verifica Login
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['tem_item' => false, 'msg' => 'Não logado']);
     exit;
 }
 
-// 2. Conecta ao Banco
+// Conecta ao Banco
 if (file_exists('../conecta.php')) {
     require '../conecta.php';
 } elseif (file_exists('conecta.php')) {
@@ -28,7 +28,7 @@ if (!$itemId) {
     exit;
 }
 
-// 4. Consulta SQL
+// consulta SQL
 // Verifica se existe registro na tabela 'compras'
 $sql = "SELECT id FROM compras WHERE user_id = ? AND cosmetic_id = ?";
 $stmt = $conn->prepare($sql);

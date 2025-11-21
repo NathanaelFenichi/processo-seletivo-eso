@@ -4,44 +4,38 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - Loja Fortnite</title>
-  
-  <!-- Caminhos do CSS corrigidos -->
+
   <link rel="stylesheet" href="../css/geral.css" />
   <link rel="stylesheet" href="../css/cadastro-login.css" />
 </head>
 <body>
 
-  
+
   <?php include 'nav.php'; ?>
 
   <main class="container">
     <div class="form-card">
       <h1>FAÇA LOGIN</h1>
 
-      <?php 
-      // Exibe mensagem de erro se houver (definida no backend)
+      <?php
       if (isset($_SESSION['login_erro'])) {
           echo "<p style='color: #ff4444; font-weight: bold; margin: 10px 0; text-align: center;'>" . $_SESSION['login_erro'] . "</p>";
-          // Limpa o erro após exibir para não ficar aparecendo sempre
           unset($_SESSION['login_erro']);
       }
       ?>
 
       <p class="subtitle">Entre com suas credenciais para continuar.</p>
 
-      <!-- O action aponta para o arquivo que processa o login -->
       <form method="post" action="../backend/validaLogin.php">
         <label>Digite seu email</label>
 
         <div class="input-group">
-          <!-- Caminho da imagem corrigido -->
           <span class="icon"><img src="../img/icons/email 1.png" alt="Email Icon"></span>
           <input name="email" type="email" placeholder="email@example.com" required />
         </div>
 
         <label>Senha</label>
         <div class="input-group">
-          <!-- Caminho da imagem corrigido -->
           <span class="icon"><img src="../img/icons/padlock 5.png" alt="Senha Icon"></span>
           <input name="senha" type="password" placeholder="Digite sua senha..." required />
         </div>
