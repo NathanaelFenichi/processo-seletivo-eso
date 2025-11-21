@@ -14,7 +14,13 @@ Este é um projeto desenvolvido para o processo seletivo da vaga de estágio na 
 
 ## Funcionalidades Não Implementadas
 
+Devido a limitações de tempo (semana de provas), as seguintes funcionalidades não foram concluídas:
+- Salvamento de compras do usuário.
+- Login funcional com sessão ativa.
+- Filtro por tipo de produto.
 - Containerização com Docker (incompatibilidade com o dispositivo).
+- Página detalhada de produto com descrição específica.
+- Apenas o catálogo, login e cadastro possuem interatividade completa.
 
 ## Tecnologias Utilizadas
 
@@ -53,9 +59,11 @@ Este é um projeto desenvolvido para o processo seletivo da vaga de estágio na 
 processo-seletivo-eso/
 │
 ├── index.php                 # Página inicial
+├── loja_simples.html         # Versão HTML da loja
+├── produto.html              # Página de produto
 ├── mydb (1).sql              # Dump do banco de dados
 │
-├── backend/                  # Scripts PHP 
+├── backend/                  # Scripts PHP do back-end
 │   ├── comprar.php
 │   ├── conecta.php
 │   ├── devolver.php
@@ -64,13 +72,13 @@ processo-seletivo-eso/
 │   ├── validaCadastro.php
 │   ├── validaLogin.php
 │   ├── verifica_Posse.php
-│   └── js/                   # Scripts JavaScript
+│   └── js/                   # Scripts JavaScript do back-end
 │       ├── catalogo.js
 │       ├── home.js
 │       ├── produto.js
-│     
+│       └── testes.js
 │
-├── css/                     
+├── css/                      # Folhas de estilo
 │   ├── cadastro-login.css
 │   ├── geral.css
 │   ├── index.css
@@ -80,6 +88,7 @@ processo-seletivo-eso/
 │
 ├── img/                      # Imagens e ícones
 │   ├── fortinite-banner.jpeg
+│   ├── photo.png
 │   └── icons/
 │
 └── paginas/                  # Páginas PHP
@@ -95,7 +104,7 @@ processo-seletivo-eso/
 
 ## Nota Pessoal
 
-Esse projeto foi feito em um período de bastante demanda por causa das provas da faculdade, mas acabou sendo uma boa oportunidade para revisitar conteúdos do curso técnico em TI e colocar em prática o que eu já sabia. Ainda tenho pontos do código que preciso rever, porque fiquei um tempo sem contato com esses temas e estou retomando agora, mas vejo isso como parte do processo de aprendizado.Desde ja agradeço pela chance de participar do processo seletivo.
+Este projeto foi desenvolvido em um período de alta demanda devido a provas acadêmicas, o que resultou em algumas funcionalidades incompletas. Mesmo assim, serviu como uma oportunidade valiosa para revisar conceitos aprendidos no curso técnico em TI. Agradeço pela oportunidade de participar do processo seletivo.
 
 ## Contato
 
