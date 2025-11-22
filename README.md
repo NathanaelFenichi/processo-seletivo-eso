@@ -34,47 +34,35 @@ Nada de firula — foco no funcionamento.
 ## 🚫 O que ainda não tem
 - Docker (não rolou no dispositivo onde desenvolvi).
 - Testes automatizados.
-- Hash de senha / prepared statements (a parte de segurança ainda precisa ser reforçada).
-- Fluxo mais robusto de validação.
 
 ---
 
-## 📁 Estrutura do Projeto
-
+```text
 processo-seletivo-eso/
 │
-├── index.php
-├── mydb (1).sql
+├── index.php              # Ponto de entrada
+├── mydb.sql               # banco de dados
 │
-├── backend/
-│ ├── conecta.php
-│ ├── validaCadastro.php
-│ ├── validaLogin.php
-│ ├── comprar.php
-│ ├── devolver.php
-│ ├── obtidos.php
-│ ├── verifica_Posse.php
-│ └── js/
-│ ├── catalogo.js
-│ ├── home.js
-│ └── produto.js
+├── backend/               # Lógica de negócio e APIs
+│   ├── conecta.php        # Configuração da Base de Dados
+│   ├── validaCadastro.php
+│   ├── validaLogin.php
+│   ├── comprar.php        # Lógica de transação
+│   ├── devolver.php       # Lógica de estorno
+│   ├── obtidos.php
+│   ├── verifica_Posse.php
+│   └── js/                # Scripts de interação
 │
-├── paginas/
-│ ├── cadastro.php
-│ ├── catalogo.php
-│ ├── login.php
-│ ├── perfil.php
-│ ├── perfilPub.php
-│ ├── produto.php
-│ └── usuarios.php
+├── paginas/               # Interfaces de utilizador (Views)
+│   ├── cadastro.php
+│   ├── catalogo.php
+│   ├── login.php
+│   ├── perfil.php
+│   └── ...
 │
-├── css/
-└── img/
+└── css/ & img/            # Estilos e Assets
 
-yaml
-Copiar código
-
----
+````
 
 ## Como rodar localmente
 
@@ -90,48 +78,21 @@ Copiar código
    git clone https://github.com/NathanaelFenichi/processo-seletivo-eso.git
 Coloque a pasta dentro do htdocs do XAMPP:
 
-makefile
-Copiar código
-C:\xampp\htdocs\processo-seletivo-eso
-Importe o banco:
-
-Abra o phpMyAdmin
-
-Crie um banco
-
-Importe mydb (1).sql
-
-Ajuste o arquivo:
-
-bash
-Copiar código
-backend/conecta.php
+2. instale e ative o xampp
+3. abra o phpmyadmin no navegador
+4. Importe o banco "mydb.sql"
+5. Ajuste o arquivo: backend/conecta.php
 com as credenciais do seu MySQL.
 
-Abra no navegador:
-
-arduino
+6. Abra no navegador:
 Copiar código
 http://localhost/processo-seletivo-eso/index.php
-🧩 Observações diretas sobre o código
-O fluxo de compra e devolução funciona, mas ainda não usa transações nem prepared statements.
 
-Senhas precisam ser hashadas (password_hash / password_verify).
-
+### Observações diretas sobre o código
 O JS do catálogo funciona, mas ainda pode ser desacoplado e melhor estruturado.
-
 As páginas estão funcionais e simples, o suficiente pra entender o fluxo.
 
-A organização geral tá limpa o bastante pro avaliador navegar sem sofrer.
 
-📌 Melhorias planejadas (curto prazo)
-Hash de senha + refatoração de SQL com PDO.
-
-Documentação dos endpoints e parâmetros.
-
-Dockerfile + docker-compose.
-
-Testes básicos de login, compra e devolução.
 
 📞 Contato
 Email: nathanael.essantos@gmail.com
