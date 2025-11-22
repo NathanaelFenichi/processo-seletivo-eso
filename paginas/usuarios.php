@@ -62,7 +62,7 @@ $pages = ceil($total / $per_page);
                             data-id="<?= $user['id'] ?>"
                             data-email="<?= htmlspecialchars($user['email']) ?>"
                             data-vbucks="<?= $user['vbucks'] ?>"
-                            data-ultima-compra="<?= htmlspecialchars($user['ultima_compra']) ?>"
+                            data-ultima-compra="<?= htmlspecialchars($user['ultima_compra']) ?>"    
                             data-data-compra="<?= $user['data_compra'] ?>">
                             Ver Perfil
                         </button>
