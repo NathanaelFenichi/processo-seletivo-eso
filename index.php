@@ -1,4 +1,12 @@
+<?php
+
+ob_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 <!DOCTYPE html>
+<html lang="pt-br">
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
