@@ -1,4 +1,7 @@
 FROM php:8.3-apache
-LABEL Name=processoseletivoeso Version=0.0.1
-COPY . /var/www/html/
 
+# Esta linha ensina o Docker a instalar o MySQLi
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+
+# Esta linha copia seus arquivos
+COPY . /var/www/html/

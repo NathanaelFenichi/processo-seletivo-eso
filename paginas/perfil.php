@@ -153,16 +153,22 @@ $historico = $stmtCompras->get_result();
         $btn.text("Processando...").prop("disabled", true);
 
         $.ajax({
-            url: '../backend/devolver.php',
+            // 1. CORREÇÃO DO CAMINHO:
+            // Usar '/' no começo garante que ele busque a partir da raiz do site (localhost)
+            url: '/backend/devolver.php', 
+            
             method: 'POST',
-            dataType: 'json', // Força esperar um JSON
-            data: JSON.stringify({ id_compra: idCompra }),
+            dataType: 'json',
+            
+            // 2. CORREÇÃO DOS DADOS:
+            // Removemos o JSON.stringify. O jQuery vai enviar como form-data,
+            // que é o que o PHP $_POST entende nativamente.
+            data: { id_compra: idCompra }, 
+            
             success: function(res) {
                 if(res.sucesso) {
                     alert("✅ " + res.msg);
-                    // Remove o card da tela suavemente
                     $(`#compra-${idCompra}`).fadeOut(500, function(){ $(this).remove(); });
-                    // Atualiza a página depois de um tempo para atualizar o saldo na nav
                     setTimeout(() => location.reload(), 1000);
                 } else {
                     alert("❌ Erro: " + (res.msg || "Erro desconhecido"));
@@ -170,8 +176,9 @@ $historico = $stmtCompras->get_result();
                 }
             },
             error: function(xhr, status, error) {
-                console.log(xhr.responseText); // Para você ver o erro no Console do navegador (F12)
-                alert("Erro de sistema! Abra o console (F12) para ver detalhes.");
+                console.log(xhr.responseText); 
+                // Mostra o erro exato se não for 404 ou 200
+                alert("Erro de sistema: " + xhr.status + " " + error);
                 $btn.text(textoOriginal).prop("disabled", false);
             }
         });
