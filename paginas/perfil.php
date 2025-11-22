@@ -40,7 +40,6 @@ $historico = $stmtCompras->get_result();
   <link rel="stylesheet" href="../css/geral.css" />
   <link rel="stylesheet" href="../css/perfil.css" />
   
-  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
@@ -49,7 +48,6 @@ $historico = $stmtCompras->get_result();
   
   <main class="container">
     
-    <!-- CABEÇALHO DO PERFIL -->
     <section class="perfil-usuario">
       <div class="avatar">
         <div class="placeholder"><?php echo strtoupper(substr($user['nome'], 0, 1)); ?></div>
@@ -64,7 +62,6 @@ $historico = $stmtCompras->get_result();
       </div>
     </section>
 
-    <!-- LISTA DE COMPRAS -->
     <section class="compras">
       <h2>Meus Itens</h2>
 
@@ -108,20 +105,14 @@ $historico = $stmtCompras->get_result();
             const $nome = $card.find('.nome-item');
             const $tipo = $card.find('.tipo');
 
-            // Caso 1: É um Pacote (Bundle) criado manualmente
             if (String(idItem).startsWith('bundle_')) {
-                // Tenta limpar o nome (remove 'bundle_' e underscores)
                 let nomeLimpo = idItem.replace('bundle_', '').replace(/_/g, ' ');
                 $nome.text(nomeLimpo);
                 $tipo.text("Pacote Promocional");
-                
-                // Tente usar uma imagem genérica online se não tiver a local
-                // Substitua por uma imagem que exista na sua pasta img/
                 $img.attr('src', 'https://fortnite-api.com/images/cosmetics/br/bid_001_generic/icon.png'); 
                 return;
             }
 
-            // Caso 2: É um item normal -> Busca na API
             $.ajax({
                 url: `https://fortnite-api.com/v2/cosmetics/br/${idItem}?language=pt-BR`,
                 dataType: 'json',
@@ -134,36 +125,31 @@ $historico = $stmtCompras->get_result();
                     }
                 },
                 error: function() {
-                    console.log("Erro ao carregar imagem do item:", idItem);
                     $nome.text("Item Indisponível (API)");
-                    // Imagem de erro
                     $img.attr('src', 'https://fortnite-api.com/images/cosmetics/br/bid_001_generic/icon.png'); 
                 }
             });
         });
     });
 
-    // --- FUNÇÃO DEVOLVER ---
+    // --- FUNÇÃO DEVOLVER (CORRIGIDA) ---
     function devolverItem(idCompra) {
         if(!confirm("Tem certeza? Essa ação removerá o item e devolverá os V-Bucks.")) return;
 
-        // Muda texto do botão para o usuário saber que algo está acontecendo
         const $btn = $(`#compra-${idCompra} button`);
         const textoOriginal = $btn.text();
         $btn.text("Processando...").prop("disabled", true);
 
         $.ajax({
-            // 1. CORREÇÃO DO CAMINHO:
-            // Usar '/' no começo garante que ele busque a partir da raiz do site (localhost)
-            url: '/backend/devolver.php', 
-            
+            url: '/backend/devolver.php',
             method: 'POST',
-            dataType: 'json',
             
-            // 2. CORREÇÃO DOS DADOS:
-            // Removemos o JSON.stringify. O jQuery vai enviar como form-data,
-            // que é o que o PHP $_POST entende nativamente.
-            data: { id_compra: idCompra }, 
+            // CORREÇÃO CRÍTICA AQUI:
+            // Avisa o servidor que estamos mandando JSON
+            contentType: 'application/json', 
+            
+            // Transforma o objeto JavaScript em texto JSON string
+            data: JSON.stringify({ id_compra: idCompra }), 
             
             success: function(res) {
                 if(res.sucesso) {
@@ -177,8 +163,7 @@ $historico = $stmtCompras->get_result();
             },
             error: function(xhr, status, error) {
                 console.log(xhr.responseText); 
-                // Mostra o erro exato se não for 404 ou 200
-                alert("Erro de sistema: " + xhr.status + " " + error);
+                alert("Erro de sistema: " + xhr.status);
                 $btn.text(textoOriginal).prop("disabled", false);
             }
         });
