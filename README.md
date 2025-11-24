@@ -2,12 +2,12 @@
 
 Projeto feito para o processo seletivo da ESO.  
 A ideia aqui é mostrar o básico de um e-commerce: cadastro, login, catálogo, compra, devolução e visualização de usuários.
+optei por ultilizar cores claras para o publico mais adulto e um desgn moderno e arredondado para o publico jovem, busquei mesclar os dois lados da moeda
 
-Nada de firula — foco no funcionamento.
 
 ---
 
-## 🔧 O que funciona
+## 🔧 funcionalidades
 
 ### 🛒 Loja
 - Catálogo com paginação.
@@ -23,17 +23,20 @@ Nada de firula — foco no funcionamento.
 
 ### 🗄️ Banco
 - MySQL funcionando com todas as tabelas necessárias.
-- Dump incluso no projeto.
+- registro de usuarios cadastro, e registro de compras,
 
 ### 🌐 Front e Back
-- HTML, CSS e JavaScript simples no front.
+- HTML, CSS e JavaScript basico, estou aprendendo.
 - PHP no back-end com as regras de compra, devolução, login, etc.
+- integração com API funcionando junto dos filtros.
+- docker funcionando
 
 ---
 
 ## 🚫 O que ainda não tem
-- Docker (não rolou no dispositivo onde desenvolvi).
 - Testes automatizados.
+- histórico de compras e devoluções feitas pelo usuario
+- 
 
 ---
 
@@ -67,7 +70,7 @@ processo-seletivo-eso/
 ## Como rodar localmente
 
 ### Requisitos
-- XAMPP, WAMP ou equivalente
+- docker
 - PHP 8+
 - MySQL 5.7+ ou MariaDB
 
@@ -76,23 +79,19 @@ processo-seletivo-eso/
 1. Clone o repositório:
    ```bash
    git clone https://github.com/NathanaelFenichi/processo-seletivo-eso.git
-Coloque a pasta dentro do htdocs do XAMPP:
-
-2. instale e ative o xampp
-3. abra o phpmyadmin no navegador
-4. Importe o banco "mydb.sql"
-5. Ajuste o arquivo: backend/conecta.php
-com as credenciais do seu MySQL.
-
-6. Abra no navegador:
+2. tenha o Docker instalado em seu dispositivo (e funcionando).
+3. clique com o botão direito sobre o arquivo "docker-composr.yml" e clique em compose Up
+4. Abra no navegador:
 Copiar código
-http://localhost/processo-seletivo-eso/index.php
+http://localhost/processo-seletivo-eso/
+e estara funcionando normalmente
 
 ### Observações diretas sobre o código
-O JS do catálogo funciona, mas ainda pode ser desacoplado e melhor estruturado.
-As páginas estão funcionais e simples, o suficiente pra entender o fluxo.
+O funcionamento de sessão tem pontos a melhorar, a aplicação do docker foi feita em ultimo instante pode ter algum bug,
+design e layout tem pontos a fixar, e a tela de usuarios tem o histŕico de compras a ser fixado, fora o cigo de usuario cadastrado tambêm
 
-
+## Observações pessoais
+Eu considerei fazer este projeto um belo de um desafio para quem nunca tinha feito um projeto, tenho a agradecer a oprtunidade do aprendizado, a revisão de meus conhecimentos, apesar de tudo estou satisfeito com o meu resultado, reconheço que tem muitos pontos de melhoria, e aprimoramento tanto no front-end quanto no back-end.
 
 📞 Contato
 Email: nathanael.essantos@gmail.com
