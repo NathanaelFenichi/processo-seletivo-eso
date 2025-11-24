@@ -2,8 +2,9 @@
 
 Projeto feito para o processo seletivo da ESO.  
 A ideia aqui é mostrar o básico de um e-commerce: cadastro, login, catálogo, compra, devolução e visualização de usuários.
-optei por ultilizar cores claras para o publico mais adulto e um desgn moderno e arredondado para o publico jovem, busquei mesclar os dois lados da moeda
-
+optei por ultilizar cores claras para o publico mais adulto e um desgn moderno e arredondado para o publico jovem, busquei mesclar os dois lados da moeda.
+pelas linguagens usem o JQuery para integrar as APIs(o que estou recentemente aprendendo na faculdade), e como backend usei o php basico(aprendi no curso do senac), com mysql (HeidSql) como banco de dados.
+ 
 
 ---
 
