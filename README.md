@@ -94,5 +94,5 @@ design e layout tem pontos a fixar, e a tela de usuarios tem o histŕico de comp
 ## Observações pessoais
 Eu considerei fazer este projeto um belo de um desafio para quem nunca tinha feito um projeto, tenho a agradecer a oprtunidade do aprendizado, a revisão de meus conhecimentos, apesar de tudo estou satisfeito com o meu resultado, reconheço que tem muitos pontos de melhoria, e aprimoramento tanto no front-end quanto no back-end.
 
-📞 Contato
+## 📞 Contato
 Email: nathanael.essantos@gmail.com
