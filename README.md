@@ -96,4 +96,3 @@ Eu considerei fazer este projeto um belo de um desafio para quem nunca tinha fei
 
 📞 Contato
 Email: nathanael.essantos@gmail.com
-WhatsApp: (19) 99308-4117
