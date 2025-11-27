@@ -13,7 +13,10 @@
   <script src="../backend/js/catalogo.js"></script>
 </head>
 <body>
-  <?php include 'nav.php'; ?>
+  <?php 
+session_start();
+include 'nav.php'; 
+  ?>
 
   <main class="container">
     <section class="pesquisa-e-filtros">
