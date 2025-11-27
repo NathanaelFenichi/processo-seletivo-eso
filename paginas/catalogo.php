@@ -1,3 +1,6 @@
+<?php
+  session_start();
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -11,9 +14,7 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
   <script src="../backend/js/catalogo.js"></script>
-  <?php
-  session_start();
-  ?>
+  
 </head>
 <body>
   <?php 
