@@ -11,10 +11,12 @@
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
   <script src="../backend/js/catalogo.js"></script>
+  <?php
+  session_start();
+  ?>
 </head>
 <body>
   <?php 
-session_start();
 include 'nav.php'; 
   ?>
 
